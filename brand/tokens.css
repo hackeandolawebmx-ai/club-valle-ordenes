@@ -1,0 +1,10 @@
+/* Club Valle · tokens de marca (fuente: Brand Brochure del club) */
+:root {
+  /* Oficiales */
+  --cv-verde-oak: #31674F;      /* RGB 49,103,79   · Pantone 7484C */
+  --cv-verde-1955: #C7E3CB;     /* RGB 199,227,203 · Pantone 344C  */
+  --cv-beige-sparkling: #F5F1E5;/* RGB 245,241,229 · Pantone 7499C */
+
+  /* Aproximado de las capturas de su app (no es oficial): barra superior y botones */
+  --cv-app-verde: #5FA880;
+}
