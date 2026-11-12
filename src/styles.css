@@ -138,9 +138,9 @@ textarea{min-height:90px;resize:vertical}
 @media print{.top,.nav,.noprint{display:none!important}.main{padding:0}body{background:#fff}}
 
 /* login */
-.login{min-height:100vh;display:grid;place-items:center;padding:24px 16px}
+.login{display:flex;justify-content:center;align-items:flex-start;padding:calc(20px + env(safe-area-inset-top)) 16px 32px}
 .login .box{width:100%;max-width:420px}
-.login .logo{display:block;width:230px;max-width:70%;margin:0 auto 18px}
+.login .logo{display:block;width:210px;max-width:65%;margin:0 auto 6px}
 .demo{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .demo button{text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:8px 10px;cursor:pointer}
 .demo button:hover{border-color:var(--menta);background:var(--v1955)}
