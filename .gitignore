@@ -7,3 +7,5 @@ test/shots
 test/shots2
 video/fotos
 video/salida
+slides/*.pptx
+slides/*.pdf
