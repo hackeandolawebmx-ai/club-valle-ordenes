@@ -1,9 +1,12 @@
 const { chromium } = require("playwright");
-const URL = "http://127.0.0.1:3000/"; const O = "/tmp/shots2";
+const path = require("path"), fs = require("fs");
+const URL = process.env.APP_URL || "http://127.0.0.1:3000/";
+const VID = process.env.VID_DIR || path.join(__dirname, "..", "video", "fotos"); // foto_fuga.jpg y foto_listo.jpg
+const O = process.env.SHOTS || path.join(__dirname, "shots2"); fs.mkdirSync(O, { recursive: true });
 (async () => {
   const br = await chromium.launch();
   const ctx = async (w, h, user) => { const c = await br.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2 }); const p = await c.newPage(); await p.goto(URL); await p.waitForSelector(".demo"); await p.click(`button:has(span:text-is("${user}"))`); await p.waitForSelector(".nav"); await p.waitForTimeout(600); return [c, p]; };
-  const foto = (n) => `/tmp/vid/${n}.jpg`;
+  const foto = (n) => path.join(VID, n + ".jpg");
   let [c, p] = await ctx(390, 844, "Daniela Cantú");
   await p.click(".nav a.centro"); await p.waitForSelector("textarea");
   await p.selectOption("select >> nth=0", { label: "Alberca" }); await p.fill('input[type=text]', "Andén lado profundo");

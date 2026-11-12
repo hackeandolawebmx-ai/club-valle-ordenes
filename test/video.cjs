@@ -1,6 +1,6 @@
-// Graba los segmentos de la demo contra la réplica local. Salida: /tmp/vid/segN.webm y /tmp/vid/caps.json
+// Graba los segmentos de la demo contra la réplica local. Salida: $VID_DIR/segN.webm y caps.json (por defecto video/salida). Fotos: $VID_DIR/foto_fuga.jpg y foto_listo.jpg
 const { chromium } = require("playwright"); const fs = require("fs");
-const URL = "http://127.0.0.1:3000/"; const OUT = "/tmp/vid";
+const URL = process.env.APP_URL || "http://127.0.0.1:3000/"; const OUT = process.env.VID_DIR || require("path").join(__dirname, "..", "video", "salida"); fs.mkdirSync(OUT, { recursive: true });
 const RIPPLE = `document.addEventListener('pointerdown',e=>{const d=document.createElement('div');d.style.cssText='position:fixed;z-index:99999;pointer-events:none;width:46px;height:46px;border-radius:50%;background:rgba(95,168,128,.55);border:3px solid #31674F;left:'+(e.clientX-23)+'px;top:'+(e.clientY-23)+'px;transition:all .55s ease-out';document.body.appendChild(d);requestAnimationFrame(()=>{d.style.transform='scale(1.9)';d.style.opacity='0'});setTimeout(()=>d.remove(),700)},true);`;
 const caps = {}; let folio = "";
 (async () => {
@@ -31,7 +31,7 @@ const caps = {}; let folio = "";
     cap("Prioridad, riesgo para socios\ny hasta 3 fotos");
     await p.click('.seg button:text-is("Alta")'); await w(700);
     await p.check(".check input"); await w(700);
-    await p.setInputFiles('input[type=file]', "/tmp/vid/foto_fuga.jpg"); await p.waitForSelector(".prev img"); await w(1800);
+    await p.setInputFiles('input[type=file]', OUT + "/foto_fuga.jpg"); await p.waitForSelector(".prev img"); await w(1800);
     await p.evaluate(() => window.scrollTo({ top: 9999, behavior: "smooth" })); await w(1200);
     await p.click('button:text-is("Enviar reporte")'); await p.waitForSelector(".timeline");
     folio = ((await p.textContent(".folio")) || "").trim();
@@ -57,7 +57,7 @@ const caps = {}; let folio = "";
     cap("Cambia el estatus y deja evidencia.\nNo puede cerrar la orden");
     await p.click('button:text-is("Iniciar / reanudar")'); await p.waitForSelector(".badge.b-en_proceso"); await w(1500);
     await p.type(".card.verde textarea", "Cambié el empaque y probé.", { delay: 40 }); await w(500);
-    await p.setInputFiles('.card.verde input[type=file]', "/tmp/vid/foto_listo.jpg"); await w(2200);
+    await p.setInputFiles('.card.verde input[type=file]', OUT + "/foto_listo.jpg"); await w(2200);
     await p.click('button:text-is("Marcar resuelta")'); await p.waitForSelector(".badge.b-resuelta"); await w(2800);
   });
   // 4 supervisor cierra

@@ -4,3 +4,6 @@ dist-local
 *.zip
 .env*
 test/shots
+test/shots2
+video/fotos
+video/salida
