@@ -123,7 +123,7 @@ pres.defineSlideMaster({
 
   const phases = [
     ["1", "Piloto de mantenimiento e intendencia", "90 días, con roles de gerente, supervisor y operativo."],
-    ["2", "Bot en el WhatsApp del club", "Reportar con foto y recibir avisos de estatus por WhatsApp."],
+    ["2", "Bot en el WhatsApp del club", "Para socios y recepción: informa, toma recados y reporta fallas."],
     ["3", "Un módulo a elegir", "Pedidos con QR, canchas, eventos o preventivo (ver anexo)."],
   ];
   phases.forEach(([n, head, desc], i) => {
@@ -165,7 +165,7 @@ pres.defineSlideMaster({
   s2.addNotes(
     "Mensaje: se pide aprobar un piloto acotado, no un proyecto grande. " +
     "Hoy el club no mide tiempos de atención; el piloto da la primera línea base con datos reales. " +
-    "Las fases 2 y 3 son una oportunidad, no un compromiso. La fase 2 es un bot en la cuenta de WhatsApp del club: el personal reporta con foto y quien reportó recibe avisos de cada cambio de estatus; requiere la cuenta de WhatsApp Business del club y se cotiza aparte. La fase 3 es un módulo que el club elige del anexo. " +
+    "Las fases 2 y 3 son una oportunidad, no un compromiso. La fase 2 es un bot en la cuenta de WhatsApp del club para socios y para recepción o administración: informa, toma recados y levanta reportes de fallas, y quien reportó recibe avisos de cada cambio de estatus; requiere la cuenta de WhatsApp Business del club y se cotiza aparte. La fase 3 es un módulo que el club elige del anexo. " +
     "Inversión: $35,000 de implementación única y $5,500 mensuales; el piloto de 3 meses suma $51,500 más IVA ($59,740 con IVA). " +
     "Condiciones de lanzamiento (para conversar, no en la slide): si se contrata el año al cerrar el piloto, se acredita el 50% de la implementación contra la primera anualidad, vigente 30 días después del piloto. " +
     "Los datos son del club y se pueden exportar en cualquier momento."
@@ -185,7 +185,7 @@ pres.defineSlideMaster({
     [fa.FaTableTennis, "Canchas de tenis y pádel", "Reserva por horario, con reglas por membresía y lista de espera.", "Se define junto a la app de socios"],
     [fa.FaCalendarCheck, "Reserva de eventos y salones", "Solicitud, disponibilidad, cotización y montaje como orden de servicio.", "Reutiliza las órdenes"],
     [fa.FaTools, "Mantenimiento preventivo", "Rutinas por zona y equipo: alberca, aire acondicionado, gimnasio.", "Calendario automático"],
-    [fa.FaChartLine, "Tiempos de atención", "Metas por tipo de falla y alertas de órdenes rezagadas.", "Con base en datos del piloto"],
+    [fa.FaPhoneAlt, "Asistente de voz por teléfono", "Atiende llamadas de socios y externos: informa, agenda y toma recados.", "Comparte agente con WhatsApp"],
     [fa.FaCreditCard, "Pago a la cuenta del socio", "Cargo de pedidos y reservas a la cuenta del socio.", "Requiere integrar la cobranza"],
   ];
   const gx = 0.6, gy = 2.95, cw = 3.9, ch = 1.8, gap = 0.215, gv = 0.15;
@@ -204,7 +204,7 @@ pres.defineSlideMaster({
     "Todo se construye sobre lo mismo: usuarios, roles y QR por zona. " +
     "Pedidos con QR se cotiza aparte; el pago a la cuenta del socio depende de integrarse con el sistema de cobranza. " +
     "Canchas y eventos: la app de socios ya cubre parte de las reservas, así que antes de construir se define si conviene complementar o integrarse, sin duplicar. " +
-    "El bot de WhatsApp ya es la fase 2. Preventivo y tiempos de atención aprovechan los datos que deje el piloto."
+    "El bot de WhatsApp ya es la fase 2 y atiende a socios y a recepción o administración. El asistente de voz usa el mismo agente por teléfono: contesta llamadas de socios y de externos, informa horarios, costos y membresías, agenda visitas, toma recados y transfiere a recepción. Tiene costo variable por minuto de llamada y avisa que la llamada se graba. El preventivo aprovecha los datos que deje el piloto."
   );
 
   await pres.writeFile({ fileName: OUT });
