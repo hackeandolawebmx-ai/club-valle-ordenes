@@ -1,7 +1,7 @@
 const { chromium } = require("playwright");
 const fs = require("fs");
-const OUT = "/tmp/shots"; fs.mkdirSync(OUT, { recursive: true });
-const URL = "http://127.0.0.1:3000/";
+const OUT = process.env.SHOTS || require("path").join(__dirname, "shots"); fs.mkdirSync(OUT, { recursive: true });
+const URL = process.env.APP_URL || "http://127.0.0.1:3000/";
 const log = []; const ok = (c, m) => { log.push((c ? "OK   " : "FALLA ") + m); if (!c) process.exitCode = 1; };
 (async () => {
   const br = await chromium.launch();
@@ -86,7 +86,7 @@ const log = []; const ok = (c, m) => { log.push((c ? "OK   " : "FALLA ") + m); i
   await p.context().close();
 
   // --- QR: abre el formulario con zona prellenada
-  p = await mk(); const tok = await (async () => { const pg = require("pg"); const c = new pg.Client({ host: "/home/claude/pgtest", database: "cv2", user: "postgres" }); await c.connect(); const r = await c.query("select qr_token from zonas where nombre='Gimnasio'"); await c.end(); return r.rows[0].qr_token; })();
+  p = await mk(); const tok = (await (await fetch(URL + "__prueba/qr?zona=Gimnasio")).json()).qr_token;
   await p.goto(URL + "?zona=" + tok); await p.click('button:has(span:text-is("Mauricio Leal"))'); await p.waitForSelector("textarea");
   ok((await p.inputValue("select >> nth=0")) !== "", "QR prellena la zona");
   await p.screenshot({ path: OUT + "/11-qr-prefill.png" });

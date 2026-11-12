@@ -10,7 +10,9 @@ Dueño: Daniel (iActiva). Escribir siempre en español, de tú, directo, sin emo
 - Fechas clave: demo para el gerente general lunes 16 / martes 17 nov 2026; primera sesión del consejo miércoles 18 nov, 18:00 (se presenta con 2 slides y un video corto, no demo en vivo).
 
 ## Arquitectura
-- Front: Preact + htm + supabase-js, bundle con esbuild a `dist/` (`npm run build`). Un solo archivo de lógica: `src/main.js`; estilos en `src/styles.css`. Rutas por hash. Móvil primero, barra inferior con botón central "Reportar", y menú lateral en escritorio.
+- Front: Preact + htm + supabase-js, bundle con esbuild a `dist/` (`npm run build`). Rutas por hash. Móvil primero, barra inferior con botón central "Reportar", y menú lateral verde en escritorio.
+- Código: `src/main.js` (sesión, datos compartidos, rutas y navegación), `src/lib.js` (cliente de Supabase, catálogos, utilidades y permisos de pantalla), `src/ui.js` (iconos y piezas compartidas), `src/views/` (una pantalla por archivo: login, ordenes, detalle, reportar, dashboard, qr, cuenta) y `src/styles.css` (tokens de diseño al inicio).
+- Los scripts de prueba y de video dependen de clases y textos de la interfaz (`.nav a`, `.orden`, `.card.verde`, `.badge.b-<estatus>`, `.kpis`, `.qrc`, `.demo`, `.seg button`, `.chip`, textos de botones). Si los cambias, corre `npm run test:e2e` y revisa `test/video.cjs`.
 - Datos y permisos viven en Postgres (RLS + funciones SECURITY DEFINER), no en la pantalla. Migraciones en `supabase/migrations` (0001 modelo, 0002 fotos, 0003 cierre de funciones auxiliares). Ya aplicadas en Supabase; cualquier cambio nuevo va como migración nueva.
 - Nadie escribe directo en `ordenes` ni `orden_eventos`. Todo cambio pasa por 4 RPC: `crear_orden`, `asignar_orden`, `cambiar_estatus`, `comentar_orden`. Vista `v_ordenes` con `security_invoker = true`. Fotos en el bucket privado `orden-fotos` (ruta `<orden_id>/<archivo>`) y tabla `orden_fotos`.
 
@@ -29,13 +31,13 @@ Dueño: Daniel (iActiva). Escribir siempre en español, de tú, directo, sin emo
 - Pendiente de verificar: subir una foto desde la pantalla en el Supabase real (las políticas de almacenamiento sí se probaron por SQL).
 
 ## Pruebas locales (sin red)
-- Réplica: `bash test/up.sh` levanta Postgres local (`cv2`), PostgREST y `test/mock-server.mjs` (imita auth, REST y storage de Supabase). Requiere `./build-local.sh` para generar `dist-local/`. Los procesos no sobreviven entre sesiones: volver a correr `up.sh`.
+- Réplica: `npm run build:local` genera `dist-local/` y `npm run replica` levanta `test/replica.mjs` en http://127.0.0.1:3000. Usa PGlite (Postgres en WebAssembly, sin instalar nada; corre en Windows) con las migraciones 0001 y 0003 y el seed reales, así que RLS y RPC son las de producción. Imita auth, REST y storage. Los datos viven en memoria: se reinician al reiniciar la réplica.
+- Punta a punta: `npm run test:e2e` con la réplica arriba (Playwright, 13 comprobaciones; capturas en `test/shots/`). Grabación del video: `test/video.cjs`, `test/shots.cjs` y `video/` (esperan fotos en `/tmp/vid`; ajustar rutas en Windows).
 - Permisos en Postgres: `supabase/tests/stub_supabase.sql` + migraciones + `supabase/tests/prueba_permisos.sql`.
-- Punta a punta: `node test/e2e.cjs` (Playwright, 13 comprobaciones). Capturas: `test/shots.cjs`. Grabación del video: `test/video.cjs` y `video/`.
-- Lo que no se puede probar contra la réplica: el login real de GoTrue y las políticas reales de storage; probar en la URL publicada.
+- Lo que no se puede probar contra la réplica: el login real de GoTrue y las políticas reales de storage (la 0002 no se carga); probar en la URL publicada.
 
 ## Marca
-Verde OAK #31674F, Verde 1955 #C7E3CB, Beige Sparkling #F5F1E5, verde menta de la app ~#5FA880. Títulos en serif (Marcellus), texto en DM Sans (fuentes de Google). Logos en `brand/` (son imágenes; pedir vectoriales al club para producción).
+Verde OAK #31674F, Verde 1955 #C7E3CB, Beige Sparkling #F5F1E5, verde menta de la app ~#5FA880. Títulos en serif (Marcellus), texto en DM Sans (fuentes de Google). Botones primarios en Verde OAK (el menta no da contraste suficiente con texto blanco); el menta queda como acento. El logo en pantalla es `public/img/logo-verde.png` usado como máscara CSS (`.logo`) para pintarlo del color que pida cada fondo. Logos en `brand/` (son imágenes; pedir vectoriales al club para producción).
 
 ## Presentación y video
 `slides/build.js` genera `Club_Valle_Propuesta_Consejo.pptx` (2 slides, pptxgenjs; el `applyTheme` apunta a una ruta de skill de otro entorno, ajustarla). `video/` tiene el pipeline de voz y subtítulos (voz Daro de Google AI Studio).

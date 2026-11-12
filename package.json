@@ -4,6 +4,8 @@
   "description": "Órdenes de servicio de mantenimiento e intendencia para Club Valle (demo iActiva)",
   "scripts": {
     "build": "node build.mjs",
+    "build:local": "node build.mjs --local",
+    "replica": "node test/replica.mjs",
     "test:e2e": "node test/e2e.cjs"
   },
   "dependencies": {
@@ -14,7 +16,8 @@
   },
   "private": true,
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.16",
     "esbuild": "^0.28.2",
-    "pg": "^8.23.1"
+    "playwright": "^1.65.0"
   }
 }

@@ -3,3 +3,4 @@ dist
 dist-local
 *.zip
 .env*
+test/shots
