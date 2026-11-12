@@ -104,7 +104,7 @@ pres.defineSlideMaster({
     s1.addText(desc, { x: 1.2, y: y + 0.22, w: 3.7, h: 0.26, fontSize: 13, color: C.text1, valign: "top", margin: 0, isTextBox: true, objectName: `Paso ${n} detalle` });
   });
   s1.addText("Complementa la app de socios: no la sustituye ni la modifica.", { x: 0.6, y: 6.32, w: 4.5, h: 0.5, fontSize: 12, italic: true, color: C.accent4, valign: "top", margin: 0, isTextBox: true, objectName: "Nota complementa" });
-  s1.addImage({ path: path.join(__dirname, "hero_plataforma.png"), x: 5.43, y: 2.85, w: 7.3, h: 7.3 * 1560 / 2920, altText: "Captura de la plataforma: tablero del gerente en computadora, y formulario de reporte y detalle de una orden en el celular", objectName: "Capturas de la plataforma" });
+  s1.addImage({ path: path.join(__dirname, "hero_plataforma.png"), x: 5.43, y: 2.85, w: 7.3, h: 7.3 * 1560 / 2918, altText: "Captura de la plataforma: tablero del gerente en computadora, y formulario de reporte y detalle de una orden en el celular", objectName: "Capturas de la plataforma" });
   s1.addNotes(
     "Mensaje: hoy no hay una plataforma para reportar y dar seguimiento a las fallas del club. " +
     "Lo que se propone es una herramienta adicional, que no toca la app de socios. " +
@@ -123,8 +123,8 @@ pres.defineSlideMaster({
 
   const phases = [
     ["1", "Piloto de mantenimiento e intendencia", "90 días, con roles de gerente, supervisor y operativo."],
-    ["2", "Pedidos con QR", "Comedor y snack, con la misma infraestructura de QR por zona."],
-    ["3", "Pago a la cuenta del socio", "Sujeto a la integración con el sistema de cobranza actual."],
+    ["2", "Bot en el WhatsApp del club", "Reportar con foto y recibir avisos de estatus por WhatsApp."],
+    ["3", "Un módulo a elegir", "Pedidos con QR, canchas, eventos o preventivo (ver anexo)."],
   ];
   phases.forEach(([n, head, desc], i) => {
     const y = 2.95 + i * 0.95;
@@ -165,10 +165,46 @@ pres.defineSlideMaster({
   s2.addNotes(
     "Mensaje: se pide aprobar un piloto acotado, no un proyecto grande. " +
     "Hoy el club no mide tiempos de atención; el piloto da la primera línea base con datos reales. " +
-    "Las fases 2 y 3 son una oportunidad, no un compromiso: la fase 3 depende de poder integrarse con el sistema de cobranza actual. " +
+    "Las fases 2 y 3 son una oportunidad, no un compromiso. La fase 2 es un bot en la cuenta de WhatsApp del club: el personal reporta con foto y quien reportó recibe avisos de cada cambio de estatus; requiere la cuenta de WhatsApp Business del club y se cotiza aparte. La fase 3 es un módulo que el club elige del anexo. " +
     "Inversión: $35,000 de implementación única y $5,500 mensuales; el piloto de 3 meses suma $51,500 más IVA ($59,740 con IVA). " +
     "Condiciones de lanzamiento (para conversar, no en la slide): si se contrata el año al cerrar el piloto, se acredita el 50% de la implementación contra la primera anualidad, vigente 30 días después del piloto. " +
     "Los datos son del club y se pueden exportar en cualquier momento."
+  );
+
+  // =====================================================================
+  // SLIDE 3 · Anexo: siguientes fases
+  // =====================================================================
+  const fa = require("react-icons/fa");
+  pres.addSection({ title: "Anexo" });
+  const s3 = pres.addSlide({ masterName: "CV_CONTENIDO", sectionTitle: "Anexo" });
+  s3.addText("ANEXO · SIGUIENTES FASES", { placeholder: "eyebrow" });
+  s3.addText("Opciones para crecer sobre la misma plataforma", { placeholder: "title" });
+  s3.addText("Cada módulo reutiliza usuarios, roles y QR por zona. El orden se define con el club.", { placeholder: "lead" });
+  const mods = [
+    [fa.FaQrcode, "Pedidos con QR", "Comedor, snack y alberca: el socio pide desde su mesa o camastro.", "Cotización aparte"],
+    [fa.FaTableTennis, "Canchas de tenis y pádel", "Reserva por horario, con reglas por membresía y lista de espera.", "Se define junto a la app de socios"],
+    [fa.FaCalendarCheck, "Reserva de eventos y salones", "Solicitud, disponibilidad, cotización y montaje como orden de servicio.", "Reutiliza las órdenes"],
+    [fa.FaTools, "Mantenimiento preventivo", "Rutinas por zona y equipo: alberca, aire acondicionado, gimnasio.", "Calendario automático"],
+    [fa.FaChartLine, "Tiempos de atención", "Metas por tipo de falla y alertas de órdenes rezagadas.", "Con base en datos del piloto"],
+    [fa.FaCreditCard, "Pago a la cuenta del socio", "Cargo de pedidos y reservas a la cuenta del socio.", "Requiere integrar la cobranza"],
+  ];
+  const gx = 0.6, gy = 2.95, cw = 3.9, ch = 1.8, gap = 0.215, gv = 0.15;
+  for (let i = 0; i < mods.length; i++) {
+    const [Ic, head, desc, tag] = mods[i];
+    const x = gx + (i % 3) * (cw + gap), y = gy + Math.floor(i / 3) * (ch + gv);
+    s3.addShape(pres.shapes.RECTANGLE, { x, y, w: cw, h: ch, fill: { color: C.background1 }, line: { color: C.background1, width: 0 }, shadow: cardShadow(), objectName: `Módulo ${i + 1} tarjeta` });
+    s3.addShape(pres.shapes.OVAL, { x: x + 0.25, y: y + 0.25, w: 0.5, h: 0.5, fill: { color: C.accent2 }, line: { color: C.accent2, width: 0 }, objectName: `Módulo ${i + 1} círculo` });
+    s3.addImage({ data: await icon(Ic, "31674F"), x: x + 0.38, y: y + 0.38, w: 0.24, h: 0.24, altText: head, objectName: `Módulo ${i + 1} ícono` });
+    s3.addText(head, { x: x + 0.9, y: y + 0.25, w: cw - 1.1, h: 0.5, fontSize: 16, bold: true, fontFace: "Cambria", color: C.text1, valign: "middle", margin: 0, isTextBox: true, objectName: `Módulo ${i + 1} título` });
+    s3.addText(desc, { x: x + 0.25, y: y + 0.88, w: cw - 0.5, h: 0.5, fontSize: 13, color: C.text1, valign: "top", margin: 0, isTextBox: true, objectName: `Módulo ${i + 1} detalle` });
+    s3.addText(tag, { x: x + 0.25, y: y + 1.4, w: cw - 0.5, h: 0.28, fontSize: 12, bold: true, color: C.accent1, margin: 0, isTextBox: true, objectName: `Módulo ${i + 1} etiqueta` });
+  }
+  s3.addNotes(
+    "Slide de anexo: para el gerente o para responder preguntas del consejo; no es parte de la solicitud de aprobación. " +
+    "Todo se construye sobre lo mismo: usuarios, roles y QR por zona. " +
+    "Pedidos con QR se cotiza aparte; el pago a la cuenta del socio depende de integrarse con el sistema de cobranza. " +
+    "Canchas y eventos: la app de socios ya cubre parte de las reservas, así que antes de construir se define si conviene complementar o integrarse, sin duplicar. " +
+    "El bot de WhatsApp ya es la fase 2. Preventivo y tiempos de atención aprovechan los datos que deje el piloto."
   );
 
   await pres.writeFile({ fileName: OUT });
