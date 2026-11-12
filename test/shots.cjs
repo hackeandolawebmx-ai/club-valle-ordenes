@@ -1,0 +1,27 @@
+const { chromium } = require("playwright");
+const URL = "http://127.0.0.1:3000/"; const O = "/tmp/shots2";
+(async () => {
+  const br = await chromium.launch();
+  const ctx = async (w, h, user) => { const c = await br.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2 }); const p = await c.newPage(); await p.goto(URL); await p.waitForSelector(".demo"); await p.click(`button:has(span:text-is("${user}"))`); await p.waitForSelector(".nav"); await p.waitForTimeout(600); return [c, p]; };
+  const foto = (n) => `/tmp/vid/${n}.jpg`;
+  let [c, p] = await ctx(390, 844, "Daniela Cantú");
+  await p.click(".nav a.centro"); await p.waitForSelector("textarea");
+  await p.selectOption("select >> nth=0", { label: "Alberca" }); await p.fill('input[type=text]', "Andén lado profundo");
+  await p.selectOption("select >> nth=1", { label: "Plomería" }); await p.fill("textarea", "Fuga de agua en la regadera exterior.");
+  await p.click('.seg button:text-is("Alta")'); await p.check(".check input");
+  await p.setInputFiles('input[type=file]', foto("foto_fuga")); await p.waitForSelector(".prev img"); await p.waitForTimeout(500);
+  await p.screenshot({ path: O + "/reportar.png" });
+  await p.click('button:text-is("Enviar reporte")'); await p.waitForSelector(".timeline");
+  const folio = ((await p.textContent(".folio")) || "").trim(); await c.close();
+  [c, p] = await ctx(390, 844, "Luis Treviño"); await p.fill('input[type=search]', folio); await p.click(".orden"); await p.waitForSelector(".card.verde");
+  await p.selectOption(".card.verde select", { label: "Jorge Castillo" }); await p.fill(".card.verde textarea", "Atender hoy, hay socios cerca."); await p.click('button:text-is("Asignar")'); await p.waitForSelector(".badge.b-asignada"); await c.close();
+  [c, p] = await ctx(390, 844, "Jorge Castillo"); await p.fill('input[type=search]', folio); await p.click(".orden"); await p.waitForSelector(".card.verde");
+  await p.click('button:text-is("Iniciar / reanudar")'); await p.waitForSelector(".badge.b-en_proceso"); await p.fill(".card.verde textarea", "Cambié el empaque y probé.");
+  await p.setInputFiles('.card.verde input[type=file]', foto("foto_listo")); await p.waitForTimeout(1500);
+  await p.click('button:text-is("Marcar resuelta")'); await p.waitForSelector(".badge.b-resuelta"); await p.waitForTimeout(600);
+  await p.evaluate(() => window.scrollTo(0, 190)); await p.waitForTimeout(500);
+  await p.screenshot({ path: O + "/detalle.png" }); await c.close();
+  [c, p] = await ctx(390, 844, "Luis Treviño"); await p.waitForSelector(".orden"); await p.waitForTimeout(500); await p.screenshot({ path: O + "/bandeja.png" }); await c.close();
+  [c, p] = await ctx(1280, 800, "Roberto Salinas"); await p.waitForSelector(".kpis"); await p.waitForTimeout(800); await p.screenshot({ path: O + "/dashboard.png" }); await c.close();
+  await br.close(); console.log("ok", folio);
+})().catch((e) => { console.error("ERR", e.message); process.exit(1); });

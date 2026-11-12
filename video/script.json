@@ -1,0 +1,18 @@
+{"sent":[
+["Así funciona la herramienta de órdenes de servicio de Club Valle, de punta a punta.","intro"],
+["Quien detecta una falla la reporta desde su celular.","1"],
+["Elige la zona y el tipo de falla, y el reporte llega solo al área correcta.","1"],
+["Agrega la prioridad, si hay riesgo para los socios, y hasta tres fotos.","1"],
+["Al enviarlo, se crea el folio y queda el primer registro.","1"],
+["El supervisor del área ve su bandeja, con lo urgente primero.","2"],
+["Abre la orden y la asigna a un operativo de su equipo.","2"],
+["El operativo ve solo lo que le asignaron.","3"],
+["Cambia el estatus, sube su evidencia y marca la orden como resuelta.","3"],
+["No puede cerrarla.","3"],
+["El supervisor revisa y cierra.","4"],
+["Cada cambio queda en el historial: quién, qué y cuándo.","4"],
+["El gerente ve todo en un tablero: qué está abierto, dónde, y desde cuándo.","5"],
+["Y con un código QR por zona, reportar es escanear y listo.","5"],
+["Reportar, asignar, atender y medir, en una sola herramienta.","fin"]
+],
+"labels":{"1":"1 · REPORTAR","2":"2 · ASIGNAR","3":"3 · ATENDER","4":"4 · CERRAR","5":"5 · MEDIR"}}
