@@ -170,26 +170,30 @@ pres.defineSlideMaster({
   s2.addText("Un piloto de 90 días para empezar a medir con datos del propio club", { placeholder: "title" });
   s2.addText("Se solicita al consejo aprobar el piloto de mantenimiento e intendencia.", { placeholder: "lead" });
 
-  const phases = [
-    ["1", "Piloto de mantenimiento e intendencia", "90 días, con roles de gerente, supervisor y operativo."],
-    ["2", "Asistentes de WhatsApp y de voz", "Para socios, externos y recepción: informan, agendan, toman recados y reciben reportes."],
-    ["3", "Un módulo a elegir", "Pedidos con QR, canchas, eventos o preventivo (ver anexo)."],
+  const recibe = [
+    "App web y móvil, con QR por zona del club",
+    "Órdenes con folio, foto, prioridad e historial",
+    "Roles: gerente, supervisor, operativo y solicitante",
+    "Tablero para gerencia",
+    "Puesta en marcha: zonas, categorías y usuarios",
+    "Hosting y soporte incluidos",
   ];
-  phases.forEach(([n, head, desc], i) => {
-    const y = 2.95 + i * 0.95;
-    s2.addShape(pres.shapes.OVAL, { x: 0.6, y, w: 0.5, h: 0.5, fill: { color: i === 0 ? C.accent1 : C.accent2 }, line: { color: i === 0 ? C.accent1 : C.accent2, width: 0 }, objectName: `Fase ${n} círculo` });
-    s2.addText(n, { x: 0.6, y, w: 0.5, h: 0.5, align: "center", valign: "middle", fontSize: 16, bold: true, color: i === 0 ? C.background1 : C.accent1, margin: 0, isTextBox: true, objectName: `Fase ${n} número` });
-    s2.addText(head, { x: 1.35, y: y - 0.02, w: 5.8, h: 0.35, fontSize: 18, bold: true, fontFace: "Cambria", color: C.text1, margin: 0, isTextBox: true, objectName: `Fase ${n} título` });
-    s2.addText(desc, { x: 1.35, y: y + 0.36, w: 5.8, h: 0.5, fontSize: 14, color: C.text1, valign: "top", margin: 0, isTextBox: true, objectName: `Fase ${n} detalle` });
+  const gana = [
+    "Ninguna falla se pierde: queda con foto, responsable e historial",
+    "Gerencia ve qué está abierto, desde cuándo y quién lo atiende",
+    "Se atiende primero lo que afecta a los socios",
+    "Fallas reincidentes por zona: reparar o reemplazar con datos",
+    "Posibles ahorros: atender a tiempo antes de que escale y menos coordinación por mensajes. Se cuantifican con los datos del piloto",
+  ];
+  [["LO QUE RECIBE EL CLUB", recibe, 0.6], ["BENEFICIOS Y AHORROS", gana, 3.95]].forEach(([head, items, x], ci) => {
+    const w = 3.2, y = 2.95, h = 3.9;
+    s2.addShape(pres.shapes.RECTANGLE, { x, y, w, h, fill: { color: C.background1 }, line: { color: C.background1, width: 0 }, shadow: cardShadow(), objectName: `Tarjeta ${head}` });
+    s2.addText(head, { x: x + 0.25, y: y + 0.25, w: w - 0.5, h: 0.3, fontSize: 11, bold: true, charSpacing: 2, color: C.accent1, margin: 0, isTextBox: true, objectName: `Etiqueta ${head}` });
+    s2.addText(
+      items.map((t, i) => ({ text: t, options: { bullet: true, breakLine: i < items.length - 1, paraSpaceAfter: 6 } })),
+      { x: x + 0.25, y: y + 0.65, w: w - 0.5, h: h - 0.85, fontSize: 12, color: C.text1, valign: "top", margin: 0, isTextBox: true, objectName: `Lista ${head}` }
+    );
   });
-  s2.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 0.6, y: 5.85, w: 6.55, h: 1.0, rectRadius: 0.08, fill: { color: C.accent2 }, line: { color: C.accent2, width: 0 }, objectName: "Qué mediremos fondo" });
-  s2.addText(
-    [
-      { text: "Qué mediremos al cierre del piloto", options: { bold: true, breakLine: true } },
-      { text: "Órdenes abiertas y cerradas, antigüedad, fallas reincidentes por zona y carga por operativo." },
-    ],
-    { x: 0.85, y: 5.88, w: 6.1, h: 0.94, fontSize: 14, color: C.text1, valign: "middle", margin: 0, isTextBox: true, objectName: "Qué mediremos" }
-  );
 
   // Tarjeta de inversión
   const ix = 7.65, iy = 2.95, iw = 5.05, ih = 3.9;
@@ -213,12 +217,15 @@ pres.defineSlideMaster({
   );
   s2.addNotes(
     "Mensaje: se pide aprobar un piloto acotado, no un proyecto grande. " +
-    "Hoy el club no mide tiempos de atención; el piloto da la primera línea base con datos reales. " +
-    "Las fases 2 y 3 son una oportunidad, no un compromiso. La fase 2 son dos asistentes sobre el mismo agente: uno en la cuenta de WhatsApp del club, para socios y para recepción o administración, y otro por teléfono, para socios y externos; informan, toman recados, agendan y reciben reportes de fallas. Requieren la cuenta de WhatsApp Business del club, tienen costo variable por uso y se cotizan aparte. La fase 3 es un módulo que el club elige del mapa. " +
-    "Inversión: $35,000 de implementación única y $5,500 mensuales; el piloto de 3 meses suma $51,500 más IVA ($59,740 con IVA). " +
+    "Lo que recibe el club: la aplicación web y móvil con QR por zona, órdenes con folio, foto, prioridad e historial, los cuatro roles, el tablero para gerencia, la puesta en marcha y hosting y soporte. " +
+    "Beneficios: ninguna falla se pierde, la gerencia ve el estado real, se prioriza lo que afecta a los socios y se detectan fallas reincidentes. " +
+    "Sobre los ahorros: no se prometen cifras; hoy el club no mide tiempos ni costos de atención, y el piloto da la primera línea base con datos reales para cuantificarlos. " +
+    "Inversión: $35,000 de implementación única y $5,500 mensuales; el piloto de 3 meses suma $51,500 más IVA ($59,740 con IVA). Todo en pesos mexicanos. " +
+    "Las fases 2 y 3 del mapa son una oportunidad, no un compromiso, y se cotizan aparte. " +
     "Condiciones de lanzamiento (para conversar, no en la slide): si se contrata el año al cerrar el piloto, se acredita el 50% de la implementación contra la primera anualidad, vigente 30 días después del piloto. " +
     "Los datos son del club y se pueden exportar en cualquier momento."
   );
+
 
   // =====================================================================
   // SLIDE 3 · Anexo: siguientes fases
