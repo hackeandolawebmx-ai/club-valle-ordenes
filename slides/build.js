@@ -31,7 +31,7 @@ const THEME = {
 
 const pres = new pptxgen();
 pres.layout = "LAYOUT_WIDE"; // 13.333 x 7.5
-pres.title = "Club Valle · Propuesta de herramienta de mantenimiento";
+pres.title = "Club Valle · Aplicación a la medida";
 pres.author = "iActiva";
 pres.theme = { headFontFace: THEME.headFontFace, bodyFontFace: THEME.bodyFontFace };
 const C = pres.SchemeColor;
@@ -51,7 +51,7 @@ pres.defineSlideMaster({
   margin: [0.5, 0.6, 0.5, 0.6],
   objects: [
     { image: { x: 10.0, y: 0.38, w: 2.75, h: 2.75 / 4.7913, path: LOGO, altText: "Logo de Club Valle" } },
-    { text: { text: "Propuesta iActiva · Mantenimiento e intendencia", options: { x: 0.6, y: 6.98, w: 8, h: 0.3, fontSize: 10, color: C.accent4, margin: 0, isTextBox: true } } },
+    { text: { text: "Propuesta iActiva · Aplicación a la medida para Club Valle", options: { x: 0.6, y: 6.98, w: 8, h: 0.3, fontSize: 10, color: C.accent4, margin: 0, isTextBox: true } } },
     {
       placeholder: {
         options: { name: "eyebrow", type: "body", x: 0.6, y: 0.5, w: 8.5, h: 0.3, fontSize: 11, bold: true, charSpacing: 3, color: C.accent1, margin: 0 },
@@ -79,9 +79,58 @@ pres.defineSlideMaster({
   // =====================================================================
   // SLIDE 1 · Reto y propuesta
   // =====================================================================
+  // =====================================================================
+  // SLIDE 1 · Mapa de módulos (visión)
+  // =====================================================================
   pres.addSection({ title: "Propuesta" });
+  const s0 = pres.addSlide({ masterName: "CV_CONTENIDO", sectionTitle: "Propuesta" });
+  s0.addText("01 · LA VISIÓN", { placeholder: "eyebrow" });
+  s0.addText("Una aplicación hecha a la medida del club, que crece módulo por módulo", { placeholder: "title" });
+  s0.addText("No son módulos que ya existan: los desarrollamos para Club Valle, empezando por lo más urgente.", { placeholder: "lead" });
+  const ST = {
+    v: { fill: "31674F", line: "31674F", text: "FFFFFF", tag: "Hoy", tagColor: "FFFFFF" },
+    a: { fill: "F2C94C", line: "F2C94C", text: "22352C", tag: "Fase 2", tagColor: "22352C" },
+    f: { fill: "C7E3CB", line: "5FA880", text: "22352C", tag: "Fase 3", tagColor: "31674F" },
+    g: { fill: "E7E4D8", line: "D6D2C2", text: "5A6B62", tag: "", tagColor: "5A6B62" },
+  };
+  const bloques = [
+    ["Operación", [["Mantenimiento e intendencia", "v"], ["Mantenimiento preventivo", "f"], ["Compras e inventario", "g"], ["Seguridad y accesos", "g"]]],
+    ["Experiencia del socio", [["Asistente de WhatsApp", "a"], ["Asistente de voz por teléfono", "a"], ["Canchas de tenis y pádel", "f"], ["Eventos y salones", "f"], ["Pedidos con QR", "f"]]],
+    ["Administración", [["Membresías y registro de socios", "g"], ["Personal y turnos", "g"], ["Comunicados a socios", "g"]]],
+    ["Finanzas", [["Pago a la cuenta del socio", "f"], ["Cobranza", "g"], ["Facturación", "g"], ["Presupuesto y gastos", "g"]]],
+  ];
+  const mw = 2.9, mgap = 0.167, my = 2.95;
+  bloques.forEach(([bn, items], bi) => {
+    const x = 0.6 + bi * (mw + mgap);
+    s0.addText(bn.toUpperCase(), { x, y: my, w: mw, h: 0.34, fontSize: 12, bold: true, charSpacing: 2, color: C.accent1, valign: "middle", margin: 0, isTextBox: true, objectName: `Bloque ${bn}` });
+    s0.addShape(pres.shapes.LINE, { x, y: my + 0.36, w: mw, h: 0, line: { color: C.accent1, width: 1.25 }, objectName: `Bloque ${bn} línea` });
+    items.forEach(([name, st], ii) => {
+      const z = ST[st], y = my + 0.48 + ii * 0.62;
+      s0.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w: mw, h: 0.54, rectRadius: 0.06, fill: { color: z.fill }, line: { color: z.line, width: 1 }, objectName: `Módulo ${name}` });
+      s0.addText(name, { x: x + 0.14, y, w: z.tag ? 1.95 : mw - 0.28, h: 0.54, fontSize: 12, bold: st !== "g", color: z.text, valign: "middle", margin: 0, isTextBox: true, objectName: `Módulo ${name} texto` });
+      if (z.tag) s0.addText(z.tag, { x: x + mw - 0.85, y, w: 0.72, h: 0.54, fontSize: 11, bold: true, color: z.tagColor, align: "right", valign: "middle", margin: 0, isTextBox: true, objectName: `Módulo ${name} fase` });
+    });
+  });
+  const leyenda = [["v", "Propuesta de hoy: piloto"], ["a", "Fase 2: asistentes de WhatsApp y voz"], ["f", "Fase 3: módulos a elegir"], ["g", "Fuera de esta propuesta"]];
+  const lw = [2.6, 3.9, 3.0, 2.5]; let lx = 0.6;
+  leyenda.forEach(([st, txt], i) => {
+    const z = ST[st];
+    s0.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: lx, y: 6.52, w: 0.3, h: 0.22, rectRadius: 0.04, fill: { color: z.fill }, line: { color: z.line, width: 1 }, objectName: `Leyenda ${i + 1} color` });
+    s0.addText(txt, { x: lx + 0.4, y: 6.47, w: lw[i] - 0.45, h: 0.32, fontSize: 12, color: C.text1, valign: "middle", margin: 0, isTextBox: true, objectName: `Leyenda ${i + 1} texto` });
+    lx += lw[i];
+  });
+  s0.addNotes(
+    "Mensaje: lo que se propone no es comprar un producto que ya existe, es desarrollar una aplicación a la medida del club, módulo por módulo. " +
+    "El mapa muestra los bloques que un club suele necesitar: operación, experiencia del socio, administración y finanzas. " +
+    "En verde está lo que se propone aprobar hoy: mantenimiento e intendencia. " +
+    "En amarillo, la fase 2: asistentes de WhatsApp y de voz por teléfono para socios, externos y recepción. " +
+    "En verde claro, los módulos posibles para una fase 3, que el club elige según su prioridad. " +
+    "En gris, lo que un club suele tener y hoy no se propone tocar. " +
+    "El orden y el alcance de cada fase se definen con el club; solo se pide aprobar la primera."
+  );
+
   const s1 = pres.addSlide({ masterName: "CV_CONTENIDO", sectionTitle: "Propuesta" });
-  s1.addText("01 · LA PROPUESTA", { placeholder: "eyebrow" });
+  s1.addText("02 · PRIMER MÓDULO", { placeholder: "eyebrow" });
   s1.addText("Mantenimiento e intendencia en una sola herramienta", { placeholder: "title" });
   s1.addText("Hoy no contamos con una plataforma para levantar y dar seguimiento a las fallas de cada zona del club.", { placeholder: "lead" });
 
@@ -117,13 +166,13 @@ pres.defineSlideMaster({
   // SLIDE 2 · Piloto, fases e inversión
   // =====================================================================
   const s2 = pres.addSlide({ masterName: "CV_CONTENIDO", sectionTitle: "Propuesta" });
-  s2.addText("02 · PLAN E INVERSIÓN", { placeholder: "eyebrow" });
+  s2.addText("03 · PLAN E INVERSIÓN", { placeholder: "eyebrow" });
   s2.addText("Un piloto de 90 días para empezar a medir con datos del propio club", { placeholder: "title" });
   s2.addText("Se solicita al consejo aprobar el piloto de mantenimiento e intendencia.", { placeholder: "lead" });
 
   const phases = [
     ["1", "Piloto de mantenimiento e intendencia", "90 días, con roles de gerente, supervisor y operativo."],
-    ["2", "Bot en el WhatsApp del club", "Para socios y recepción: informa, toma recados y reporta fallas."],
+    ["2", "Asistentes de WhatsApp y de voz", "Para socios, externos y recepción: informan, agendan, toman recados y reciben reportes."],
     ["3", "Un módulo a elegir", "Pedidos con QR, canchas, eventos o preventivo (ver anexo)."],
   ];
   phases.forEach(([n, head, desc], i) => {
@@ -165,7 +214,7 @@ pres.defineSlideMaster({
   s2.addNotes(
     "Mensaje: se pide aprobar un piloto acotado, no un proyecto grande. " +
     "Hoy el club no mide tiempos de atención; el piloto da la primera línea base con datos reales. " +
-    "Las fases 2 y 3 son una oportunidad, no un compromiso. La fase 2 es un bot en la cuenta de WhatsApp del club para socios y para recepción o administración: informa, toma recados y levanta reportes de fallas, y quien reportó recibe avisos de cada cambio de estatus; requiere la cuenta de WhatsApp Business del club y se cotiza aparte. La fase 3 es un módulo que el club elige del anexo. " +
+    "Las fases 2 y 3 son una oportunidad, no un compromiso. La fase 2 son dos asistentes sobre el mismo agente: uno en la cuenta de WhatsApp del club, para socios y para recepción o administración, y otro por teléfono, para socios y externos; informan, toman recados, agendan y reciben reportes de fallas. Requieren la cuenta de WhatsApp Business del club, tienen costo variable por uso y se cotizan aparte. La fase 3 es un módulo que el club elige del mapa. " +
     "Inversión: $35,000 de implementación única y $5,500 mensuales; el piloto de 3 meses suma $51,500 más IVA ($59,740 con IVA). " +
     "Condiciones de lanzamiento (para conversar, no en la slide): si se contrata el año al cerrar el piloto, se acredita el 50% de la implementación contra la primera anualidad, vigente 30 días después del piloto. " +
     "Los datos son del club y se pueden exportar en cualquier momento."
@@ -177,16 +226,16 @@ pres.defineSlideMaster({
   const fa = require("react-icons/fa");
   pres.addSection({ title: "Anexo" });
   const s3 = pres.addSlide({ masterName: "CV_CONTENIDO", sectionTitle: "Anexo" });
-  s3.addText("ANEXO · SIGUIENTES FASES", { placeholder: "eyebrow" });
-  s3.addText("Opciones para crecer sobre la misma plataforma", { placeholder: "title" });
-  s3.addText("Cada módulo reutiliza usuarios, roles y QR por zona. El orden se define con el club.", { placeholder: "lead" });
+  s3.addText("ANEXO · FASES 2 Y 3", { placeholder: "eyebrow" });
+  s3.addText("Detalle de los módulos siguientes", { placeholder: "title" });
+  s3.addText("Cada módulo se desarrolla a la medida y reutiliza usuarios, roles y QR por zona.", { placeholder: "lead" });
   const mods = [
-    [fa.FaQrcode, "Pedidos con QR", "Comedor, snack y alberca: el socio pide desde su mesa o camastro.", "Cotización aparte"],
-    [fa.FaTableTennis, "Canchas de tenis y pádel", "Reserva por horario, con reglas por membresía y lista de espera.", "Se define junto a la app de socios"],
-    [fa.FaCalendarCheck, "Reserva de eventos y salones", "Solicitud, disponibilidad, cotización y montaje como orden de servicio.", "Reutiliza las órdenes"],
-    [fa.FaTools, "Mantenimiento preventivo", "Rutinas por zona y equipo: alberca, aire acondicionado, gimnasio.", "Calendario automático"],
-    [fa.FaPhoneAlt, "Asistente de voz por teléfono", "Atiende llamadas de socios y externos: informa, agenda y toma recados.", "Comparte agente con WhatsApp"],
-    [fa.FaCreditCard, "Pago a la cuenta del socio", "Cargo de pedidos y reservas a la cuenta del socio.", "Requiere integrar la cobranza"],
+    [fa.FaWhatsapp, "Asistente de WhatsApp", "Socios y recepción consultan, dejan recados y reportan fallas con foto.", "Fase 2 · cotización aparte"],
+    [fa.FaPhoneAlt, "Asistente de voz por teléfono", "Atiende llamadas de socios y externos: informa, agenda y toma recados.", "Fase 2 · mismo agente"],
+    [fa.FaQrcode, "Pedidos con QR", "Comedor, snack y alberca: el socio pide desde su mesa o camastro.", "Fase 3 · cotización aparte"],
+    [fa.FaTableTennis, "Canchas de tenis y pádel", "Reserva por horario, con reglas por membresía y lista de espera.", "Fase 3 · se define junto a la app de socios"],
+    [fa.FaCalendarCheck, "Reserva de eventos y salones", "Solicitud, disponibilidad, cotización y montaje como orden de servicio.", "Fase 3 · reutiliza las órdenes"],
+    [fa.FaTools, "Mantenimiento preventivo", "Rutinas por zona y equipo: alberca, aire acondicionado, gimnasio.", "Fase 3 · calendario automático"],
   ];
   const gx = 0.6, gy = 2.95, cw = 3.9, ch = 1.8, gap = 0.215, gv = 0.15;
   for (let i = 0; i < mods.length; i++) {
@@ -200,11 +249,11 @@ pres.defineSlideMaster({
     s3.addText(tag, { x: x + 0.25, y: y + 1.4, w: cw - 0.5, h: 0.28, fontSize: 12, bold: true, color: C.accent1, margin: 0, isTextBox: true, objectName: `Módulo ${i + 1} etiqueta` });
   }
   s3.addNotes(
-    "Slide de anexo: para el gerente o para responder preguntas del consejo; no es parte de la solicitud de aprobación. " +
-    "Todo se construye sobre lo mismo: usuarios, roles y QR por zona. " +
-    "Pedidos con QR se cotiza aparte; el pago a la cuenta del socio depende de integrarse con el sistema de cobranza. " +
+    "Slide de anexo: para responder preguntas del consejo; no es parte de la solicitud de aprobación. " +
+    "Todo se desarrolla a la medida del club sobre lo mismo: usuarios, roles y QR por zona. " +
+    "Pedidos con QR se cotiza aparte; el pago a la cuenta del socio, que aparece en el mapa, depende de integrarse con el sistema de cobranza. " +
     "Canchas y eventos: la app de socios ya cubre parte de las reservas, así que antes de construir se define si conviene complementar o integrarse, sin duplicar. " +
-    "El bot de WhatsApp ya es la fase 2 y atiende a socios y a recepción o administración. El asistente de voz usa el mismo agente por teléfono: contesta llamadas de socios y de externos, informa horarios, costos y membresías, agenda visitas, toma recados y transfiere a recepción. Tiene costo variable por minuto de llamada y avisa que la llamada se graba. El preventivo aprovecha los datos que deje el piloto."
+    "El asistente de WhatsApp atiende a socios y a recepción o administración. El asistente de voz usa el mismo agente por teléfono: contesta llamadas de socios y de externos, informa horarios, costos y membresías, agenda visitas, toma recados y transfiere a recepción. Tiene costo variable por minuto de llamada y avisa que la llamada se graba. El preventivo aprovecha los datos que deje el piloto."
   );
 
   await pres.writeFile({ fileName: OUT });
