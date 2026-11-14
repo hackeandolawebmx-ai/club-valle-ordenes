@@ -86,7 +86,7 @@ pres.defineSlideMaster({
   const s0 = pres.addSlide({ masterName: "CV_CONTENIDO", sectionTitle: "Propuesta" });
   s0.addText("01 · LA VISIÓN", { placeholder: "eyebrow" });
   s0.addText("Una aplicación hecha a la medida del club, que crece módulo por módulo", { placeholder: "title" });
-  s0.addText("No son módulos que ya existan: los desarrollamos para Club Valle, empezando por lo más urgente.", { placeholder: "lead" });
+  s0.addText("Cada módulo se construye a la medida de Club Valle, sobre una base que ya funciona.", { placeholder: "lead" });
   const ST = {
     v: { fill: "31674F", line: "31674F", text: "FFFFFF", tag: "Hoy", tagColor: "FFFFFF" },
     a: { fill: "F2C94C", line: "F2C94C", text: "22352C", tag: "Fase 2", tagColor: "22352C" },
@@ -128,7 +128,7 @@ pres.defineSlideMaster({
     { x: 0.8, y: 6.6, w: 11.7, h: 0.34, fontSize: 12, color: C.text1, valign: "middle", margin: 0, isTextBox: true, objectName: "Franja ya funciona" }
   );
   s0.addNotes(
-    "Mensaje: lo que se propone no es comprar un producto que ya existe, es desarrollar una aplicación a la medida del club, módulo por módulo. " +
+    "Mensaje: se propone una aplicación a la medida del club, construida módulo por módulo sobre una base que ya funciona. " +
     "El mapa muestra los bloques que un club suele necesitar: operación, experiencia del socio, administración y finanzas. " +
     "En verde está lo que se propone aprobar hoy: mantenimiento e intendencia. " +
     "En amarillo, la fase 2: asistentes de WhatsApp y de voz por teléfono para socios, externos y recepción. " +
