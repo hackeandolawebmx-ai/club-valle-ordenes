@@ -21,7 +21,7 @@ Dueño: Daniel (iActiva). Escribir siempre en español, de tú, directo, sin emo
 - **Gerente** (de Mantenimiento en el club): solo lectura (dashboard, todas las órdenes y la pantalla Equipo). No asigna, no cambia estatus, no comenta, no sube fotos.
 - **Supervisor** (mantenimiento: 2, intendencia: 1, compras: 1): ve y gestiona solo su área (y sigue viendo lo que nació en ella aunque se reasigne); asigna a personal de su área, interno o externo; cambia el estatus según le reporte su personal; es quien cierra o reabre; reasigna la orden a otra área con motivo (p. ej. a Compras); cierra reportes repetidos señalando la orden original; administra su personal.
 - **Solicitante** (departamento: alimentos y bebidas, deportes, administración, **seguridad**): levanta reportes y ve solo los suyos. Si ya hay una orden abierta igual (misma zona y tipo, 30 días) la pantalla de reporte avisa y pide confirmar que es otra falla.
-- **Socios:** no tienen cuenta. La entrada ofrece "Soy socio" (mensaje prescrito por WhatsApp; número en `CFG.wa` de `public/config.js`, pendiente) o "Soy del club" (login).
+- **Socios:** no tienen cuenta. La entrada ofrece "Soy socio" (mensaje prescrito por WhatsApp; número en `CFG.wa` de `public/config.js`: 528112489368) o "Soy del club" (login).
 - Flujo: nueva → asignada → en proceso ↔ en espera → resuelta → cerrada. Cierre por reporte repetido: cerrada con `cierre_motivo = duplicado` y folio original. Folios MAN-00001 / INT-00002 (la reasignación conserva el folio). No hay SLA ni medición de tiempos por ahora.
 - La interfaz espeja las reglas, pero el servidor decide. Si cambias una regla, cambia la RLS/RPC y agrega prueba en `supabase/tests/prueba_permisos.sql` (`npm run test:permisos`).
 
@@ -47,4 +47,4 @@ Verde OAK #31674F, Verde 1955 #C7E3CB, Beige Sparkling #F5F1E5, verde menta de l
 Bot de WhatsApp, SLA automáticos, mantenimiento preventivo, inventario, pedidos con QR y pagos (dependen de integrarse con el sistema de cobranza del club).
 
 ## Pendientes
-- Número de WhatsApp del club (`CFG.wa`). Regrabar el video (muestra un operativo con sesión propia) y regenerar la voz. `test/video.cjs` y `test/shots.cjs` aún usan el login anterior y al operativo. Apagar `CFG.demo` antes del consejo. Reseed el lunes 16.
+Regrabar el video (muestra un operativo con sesión propia) y regenerar la voz. `test/video.cjs` y `test/shots.cjs` aún usan el login anterior y al operativo. Apagar `CFG.demo` antes del consejo. Reseed el lunes 16.
