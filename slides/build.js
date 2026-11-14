@@ -105,20 +105,28 @@ pres.defineSlideMaster({
     s0.addText(bn.toUpperCase(), { x, y: my, w: mw, h: 0.34, fontSize: 12, bold: true, charSpacing: 2, color: C.accent1, valign: "middle", margin: 0, isTextBox: true, objectName: `Bloque ${bn}` });
     s0.addShape(pres.shapes.LINE, { x, y: my + 0.36, w: mw, h: 0, line: { color: C.accent1, width: 1.25 }, objectName: `Bloque ${bn} línea` });
     items.forEach(([name, st], ii) => {
-      const z = ST[st], y = my + 0.48 + ii * 0.62;
-      s0.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w: mw, h: 0.54, rectRadius: 0.06, fill: { color: z.fill }, line: { color: z.line, width: 1 }, objectName: `Módulo ${name}` });
-      s0.addText(name, { x: x + 0.14, y, w: z.tag ? 1.95 : mw - 0.28, h: 0.54, fontSize: 12, bold: st !== "g", color: z.text, valign: "middle", margin: 0, isTextBox: true, objectName: `Módulo ${name} texto` });
-      if (z.tag) s0.addText(z.tag, { x: x + mw - 0.85, y, w: 0.72, h: 0.54, fontSize: 11, bold: true, color: z.tagColor, align: "right", valign: "middle", margin: 0, isTextBox: true, objectName: `Módulo ${name} fase` });
+      const z = ST[st], y = my + 0.48 + ii * 0.56;
+      s0.addShape(pres.shapes.ROUNDED_RECTANGLE, { x, y, w: mw, h: 0.5, rectRadius: 0.06, fill: { color: z.fill }, line: { color: z.line, width: 1 }, objectName: `Módulo ${name}` });
+      s0.addText(name, { x: x + 0.14, y, w: z.tag ? 1.95 : mw - 0.28, h: 0.5, fontSize: 12, bold: st !== "g", color: z.text, valign: "middle", margin: 0, isTextBox: true, objectName: `Módulo ${name} texto` });
+      if (z.tag) s0.addText(z.tag, { x: x + mw - 0.85, y, w: 0.72, h: 0.5, fontSize: 11, bold: true, color: z.tagColor, align: "right", valign: "middle", margin: 0, isTextBox: true, objectName: `Módulo ${name} fase` });
     });
   });
   const leyenda = [["v", "Propuesta de hoy: piloto"], ["a", "Fase 2: asistentes de WhatsApp y voz"], ["f", "Fase 3: módulos a elegir"], ["g", "Fuera de esta propuesta"]];
   const lw = [2.6, 3.9, 3.0, 2.5]; let lx = 0.6;
   leyenda.forEach(([st, txt], i) => {
     const z = ST[st];
-    s0.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: lx, y: 6.52, w: 0.3, h: 0.22, rectRadius: 0.04, fill: { color: z.fill }, line: { color: z.line, width: 1 }, objectName: `Leyenda ${i + 1} color` });
-    s0.addText(txt, { x: lx + 0.4, y: 6.47, w: lw[i] - 0.45, h: 0.32, fontSize: 12, color: C.text1, valign: "middle", margin: 0, isTextBox: true, objectName: `Leyenda ${i + 1} texto` });
+    s0.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: lx, y: 6.3, w: 0.3, h: 0.22, rectRadius: 0.04, fill: { color: z.fill }, line: { color: z.line, width: 1 }, objectName: `Leyenda ${i + 1} color` });
+    s0.addText(txt, { x: lx + 0.4, y: 6.25, w: lw[i] - 0.45, h: 0.32, fontSize: 12, color: C.text1, valign: "middle", margin: 0, isTextBox: true, objectName: `Leyenda ${i + 1} texto` });
     lx += lw[i];
   });
+  s0.addShape(pres.shapes.ROUNDED_RECTANGLE, { x: 0.6, y: 6.6, w: 12.1, h: 0.34, rectRadius: 0.06, fill: { color: C.background1 }, line: { color: C.accent2, width: 1 }, objectName: "Franja ya funciona fondo" });
+  s0.addText(
+    [
+      { text: "Ya funciona hoy: ", options: { bold: true, color: C.accent1 } },
+      { text: "la plataforma de mantenimiento y la base (usuarios, roles, QR por zona) de los demás módulos. iActiva ya desarrolla agentes de voz y de WhatsApp." },
+    ],
+    { x: 0.8, y: 6.6, w: 11.7, h: 0.34, fontSize: 12, color: C.text1, valign: "middle", margin: 0, isTextBox: true, objectName: "Franja ya funciona" }
+  );
   s0.addNotes(
     "Mensaje: lo que se propone no es comprar un producto que ya existe, es desarrollar una aplicación a la medida del club, módulo por módulo. " +
     "El mapa muestra los bloques que un club suele necesitar: operación, experiencia del socio, administración y finanzas. " +
@@ -126,6 +134,7 @@ pres.defineSlideMaster({
     "En amarillo, la fase 2: asistentes de WhatsApp y de voz por teléfono para socios, externos y recepción. " +
     "En verde claro, los módulos posibles para una fase 3, que el club elige según su prioridad. " +
     "En gris, lo que un club suele tener y hoy no se propone tocar. " +
+    "La plataforma de mantenimiento ya está construida y se puede ver funcionando; es la base sobre la que se construyen los demás módulos. " +
     "El orden y el alcance de cada fase se definen con el club; solo se pide aprobar la primera."
   );
 
