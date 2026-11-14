@@ -1,6 +1,6 @@
 # Uso: python3 compose2.py [voz.wav]   (sin wav = vista previa muda con subtítulos de tiempos estimados)
 import json, subprocess, sys, re, os
-V='/tmp/vid'; FONT='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'; LOGO='/home/claude/club-valle/brand/logo-horizontal-verde-oak-transparente.png'
+V=os.environ.get('VID_DIR','/tmp/vid'); FONT='/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'; LOGO=os.environ.get('LOGO',os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','brand','logo-horizontal-verde-oak-transparente.png'))
 wav=sys.argv[1] if len(sys.argv)>1 else None
 T=json.load(open('timeline.json'))['sent']; SC=json.load(open('script.json')); LAB=SC['labels']
 CAPS=json.load(open(V+'/caps.json'))['caps']
@@ -48,16 +48,17 @@ sb=subs_for([(T[0]['text'],d1,0.5)],0,False); f2,cur=drawtexts(sb,'cis',False,cu
 run(['ffmpeg','-y','-f','lavfi','-i',f'color=c=0xF5F1E5:s=1280x720:d={L0}:r=25','-i',LOGO,'-filter_complex',';'.join(fl)+f2,'-map',f'[{cur}]','-t',str(L0),'-pix_fmt','yuv420p','-c:v','libx264','-preset','veryfast','-crf','21','c_ini.mp4']); parts.append('c_ini.mp4'); gt=L0
 idx={g:[i for i,s in enumerate(T) if s['group']==g] for g in '12345'}
 for n in '12345':
-    src=f'{V}/seg{n}.webm'; nat=dur(src); caps=[c['t'] for c in CAPS[n] if c['text']]
+    src=f'{V}/seg{n}_t.mp4' if os.path.exists(f'{V}/seg{n}_t.mp4') else f'{V}/seg{n}.webm'; nat=dur(src); caps=[c['t'] for c in CAPS[n] if c['text']]
     ids=idx[n]; phone=n!='5'
     # inicio de cada oración dentro del segmento
     anchors={'1':[0.3,5.8,12.2,17.4],'2':[0.5,6.0],'3':[0.5,5.0,None],'4':[0.5,5.5],'5':[0.5,None]}[n]
     if n=='5': anchors=[0.5,nat-3.9]
+    if os.path.exists('anchors.json') and src.endswith('_t.mp4'): anchors=json.load(open('anchors.json'))[n]
     local=[]; prev_end=-1
     for k,i in enumerate(ids):
         a=anchors[k] if anchors[k] is not None else prev_end+0.35
         a=max(a,prev_end+0.35); local.append((T[i]['text'],vo(i),a)); prev_end=a+vo(i)
-    L=max(nat,prev_end+1.0)
+    L=max(nat,prev_end+(0.4 if src.endswith('_t.mp4') else 1.0))
     sents=[(t,d,a) for (t,d,a) in local]
     for (t,d,a),i in zip(local,ids): placements.append((i,gt+a))
     subs=subs_for(sents,0,phone)
@@ -70,7 +71,7 @@ for n in '12345':
     f2,cur=drawtexts(subs,f'sb{n}',phone,cur)
     run(['ffmpeg','-y']+ins+['-filter_complex',fc+f2,'-map',f'[{cur}]','-t',f'{L:.2f}','-r','25','-pix_fmt','yuv420p','-c:v','libx264','-preset','veryfast','-crf','21',f's{n}.mp4']); parts.append(f's{n}.mp4'); gt+=L
 # cierre
-i=len(T)-1; d=vo(i); Lf=d+3.0; placements.append((i,gt+0.5))
+i=len(T)-1; d=vo(i); Lf=d+1.8; placements.append((i,gt+0.5))
 fl=["[0:v]null[b]","[1:v]scale=420:-1[l]","[b][l]overlay=(W-w)/2:140[v0]"]; cur='v0'; y=320
 for k,t in enumerate(['Reportar, asignar, atender y medir','en una sola herramienta','Complemento de la app de socios del club']):
     open(f'cf_{k}.txt','w').write(t); fl.append(f"[{cur}]drawtext=fontfile={FONT}:textfile=cf_{k}.txt:fontcolor=0x31674F:fontsize={46 if k==0 else 32}:x=(w-text_w)/2:y={y}[cf{k}]"); cur=f'cf{k}'; y+=70 if k==0 else 50
