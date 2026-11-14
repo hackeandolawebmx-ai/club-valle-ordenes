@@ -40,7 +40,7 @@ export function Dashboard({ ctx }) {
   const ab = useMemo(() => ordenes.filter(esAbierta), [ordenes]);
   const k = {
     abiertas: ab.length,
-    sinAsignar: ordenes.filter((o) => o.estatus === "nueva").length,
+    sinAsignar: ordenes.filter((o) => o.estatus === "nueva" && (perfil.rol !== "supervisor" || o.area === perfil.area)).length,
     porCerrar: ordenes.filter((o) => o.estatus === "resuelta").length,
     riesgo: ab.filter((o) => o.riesgo_socios).length,
     cerr30: ordenes.filter((o) => o.cerrada_at && Date.now() - new Date(o.cerrada_at) < 30 * DIA).length,
@@ -60,7 +60,7 @@ export function Dashboard({ ctx }) {
     return Object.entries(m).filter((x) => x[1] >= 2).sort((a, b) => b[1] - a[1]).slice(0, 6);
   }, [ordenes]);
   const atencion = ab.filter(pideAtencion).sort((a, b) => PRI_ORDEN[a.prioridad] - PRI_ORDEN[b.prioridad] || dias(b) - dias(a));
-  const carga = cuentaPor(ab.filter((o) => o.asignado_a_nombre), (o) => o.asignado_a_nombre);
+  const carga = cuentaPor(ab.filter((o) => o.asignado_a_nombre), (o) => o.asignado_a_nombre + (o.asignado_a_tipo === "externo" ? " (externo)" : ""));
   const flujo = ["nueva", "asignada", "en_proceso", "en_espera", "resuelta"];
   const titulo = perfil.rol === "gerente" ? "Dashboard" : "Dashboard de " + AREA[perfil.area].toLowerCase();
 
@@ -91,7 +91,7 @@ export function Dashboard({ ctx }) {
       <section class="card"><h3>Abiertas por categoría</h3><${Barras} datos=${cuentaPor(ab, (o) => o.categoria).slice(0, 7)} /></section>
       ${perfil.rol === "gerente" && html`<section class="card"><h3>Abiertas por área</h3><${Barras} datos=${cuentaPor(ab, (o) => AREA[o.area])} /></section>`}
       <section class="card"><h3>Abiertas por departamento solicitante</h3><${Barras} datos=${cuentaPor(ab, (o) => DEPTO[o.departamento_solicitante])} /></section>
-      <section class="card"><h3>Carga por operativo</h3><${Barras} datos=${carga} vacio="Nadie tiene órdenes abiertas asignadas." /></section>
+      <section class="card"><h3>Carga del personal</h3><${Barras} datos=${carga} vacio="Nadie del personal tiene órdenes abiertas." /></section>
       <section class="card"><h3>Fallas reincidentes <span class="muted chico">60 días</span></h3><${Barras} datos=${reinc} tono="espera" vacio="Sin reincidencias." /></section>
     </div>`}
   </div>`;

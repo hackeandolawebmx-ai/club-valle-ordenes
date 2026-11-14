@@ -1,5 +1,5 @@
 import { useState, useMemo } from "preact/hooks";
-import { AREA, ESTATUS, PRI_ORDEN, plural } from "../lib.js";
+import { AREA, AREAS, ESTATUS, PRI_ORDEN, plural } from "../lib.js";
 import { html, I, Tarjeta, Vacio, Esqueleto, BtnActualizar } from "../ui.js";
 
 const FILTROS = [
@@ -23,7 +23,7 @@ export function Ordenes({ ctx, filtro }) {
   const [vista, setVistaS] = useState(leeVista);
   const gestiona = perfil.rol === "gerente" || perfil.rol === "supervisor";
   const setVista = (v) => { setVistaS(v); try { localStorage.setItem("cv_vista", v); } catch (_) { /* sin almacenamiento */ } };
-  const titulo = perfil.rol === "operativo" ? "Mis órdenes" : perfil.rol === "solicitante" ? "Mis reportes" : perfil.rol === "supervisor" ? "Bandeja de " + AREA[perfil.area].toLowerCase() : "Todas las órdenes";
+  const titulo = perfil.rol === "solicitante" ? "Mis reportes" : perfil.rol === "supervisor" ? "Bandeja de " + AREA[perfil.area].toLowerCase() : "Todas las órdenes";
 
   const base = useMemo(() => {
     const t = q.trim().toLowerCase();
@@ -52,7 +52,7 @@ export function Ordenes({ ctx, filtro }) {
     </div>
     <div class="barra-filtros">
       <label class="buscador">${I.buscar}<input type="search" aria-label="Buscar órdenes" placeholder="Buscar por folio, zona, texto o persona" value=${q} onInput=${(e) => setQ(e.target.value)} /></label>
-      ${perfil.rol === "gerente" && html`<select class="auto" aria-label="Área" value=${area} onChange=${(e) => setArea(e.target.value)}><option value="">Ambas áreas</option><option value="mantenimiento">Mantenimiento</option><option value="intendencia">Intendencia</option></select>`}
+      ${perfil.rol === "gerente" && html`<select class="auto" aria-label="Área" value=${area} onChange=${(e) => setArea(e.target.value)}><option value="">Todas las áreas</option>${AREAS.map((a) => html`<option value=${a}>${AREA[a]}</option>`)}</select>`}
     </div>
     ${!tablero && html`<div class="chips" role="group" aria-label="Filtrar por estado">${FILTROS.map(([k, t, fn]) => html`<button aria-pressed=${f === k} class=${"chip" + (f === k ? " on" : "")} onClick=${() => setF(k)}>${t}<span class="n">${base.filter(fn).length}</span></button>`)}</div>`}
     ${!cargado ? html`<${Esqueleto} n=${5} />`

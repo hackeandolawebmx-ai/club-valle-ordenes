@@ -12,8 +12,10 @@ export const FLUJO = ["nueva", "asignada", "en_proceso", "resuelta", "cerrada"];
 export const PRIORIDAD = { urgente: "Urgente", alta: "Alta", media: "Media", baja: "Baja" };
 export const PRI_ORDEN = { urgente: 0, alta: 1, media: 2, baja: 3 };
 export const PRI_AYUDA = { urgente: "Atender de inmediato", alta: "Atender hoy", media: "Esta semana", baja: "Cuando haya espacio" };
-export const AREA = { mantenimiento: "Mantenimiento", intendencia: "Intendencia" };
-export const DEPTO = { alimentos_bebidas: "Alimentos y bebidas", deportes: "Deportes", administracion: "Administración" };
+export const AREA = { mantenimiento: "Mantenimiento", intendencia: "Intendencia", compras: "Compras" };
+export const AREAS = ["mantenimiento", "intendencia", "compras"];
+export const DEPTO = { alimentos_bebidas: "Alimentos y bebidas", deportes: "Deportes", administracion: "Administración", seguridad: "Seguridad" };
+export const DEPTOS = ["alimentos_bebidas", "deportes", "administracion", "seguridad"];
 export const ROL = { gerente: "Gerente", supervisor: "Supervisor", operativo: "Operativo", solicitante: "Solicitante" };
 export const ACCION = { en_proceso: "Iniciar / reanudar", en_espera: "Poner en espera", resuelta: "Marcar resuelta" };
 
@@ -21,21 +23,25 @@ export const DEMO = [
   ["gerente@clubvalle-demo.test", "Gerente", "Roberto Salinas"],
   ["sup.mant@clubvalle-demo.test", "Supervisor mantenimiento", "Luis Treviño"],
   ["sup.int@clubvalle-demo.test", "Supervisor intendencia", "Marisol Garza"],
-  ["op.mant1@clubvalle-demo.test", "Operativo mantenimiento", "Jorge Castillo"],
-  ["op.int1@clubvalle-demo.test", "Operativo intendencia", "Rosa Elena Ríos"],
+  ["sup.compras@clubvalle-demo.test", "Supervisor compras", "Héctor Ibarra"],
   ["sol.ayb@clubvalle-demo.test", "Alimentos y bebidas", "Daniela Cantú"],
   ["sol.dep@clubvalle-demo.test", "Deportes", "Mauricio Leal"],
   ["sol.adm@clubvalle-demo.test", "Administración", "Karla Benavides"],
+  ["sol.seg@clubvalle-demo.test", "Seguridad", "Sergio Lozano"],
 ];
 export const DEMO_PASS = "Valle2026!";
 
 /* Lo que cada rol puede hacer, en palabras. Se muestra en "Más". */
 export const PUEDES = {
-  gerente: ["Ver el dashboard y todas las órdenes de ambas áreas", "Consultar el historial completo de cada orden", "Imprimir los códigos QR por zona"],
-  supervisor: ["Ver y gestionar las órdenes de tu área", "Asignar cada orden a un operativo de tu área", "Cerrar o reabrir las órdenes resueltas", "Levantar reportes e imprimir los QR por zona"],
-  operativo: ["Ver las órdenes que te asignaron y las que reportaste", "Iniciar, poner en espera o marcar resuelta una orden", "Agregar comentarios y fotos de evidencia"],
-  solicitante: ["Reportar una falla en menos de un minuto", "Dar seguimiento a tus reportes", "Agregar comentarios y fotos"],
+  gerente: ["Ver el dashboard y todas las órdenes de todas las áreas", "Consultar el historial completo de cada orden", "Ver la estructura del equipo y los códigos QR por zona"],
+  supervisor: ["Ver y gestionar las órdenes de tu área", "Asignar cada orden a tu personal, interno o externo", "Cambiar el estatus y cerrar cuando tu personal termina", "Reasignar una orden a otra área (por ejemplo, a Compras)", "Cerrar un reporte repetido señalando la orden original", "Administrar tu personal y levantar reportes"],
+  solicitante: ["Reportar una falla en menos de un minuto", "Ver si ya hay un reporte abierto de la misma falla", "Dar seguimiento a tus reportes, con comentarios y fotos"],
 };
+
+/* Mensaje que se envía por WhatsApp cuando quien reporta es socio. */
+export const WA_MENSAJE = "Hola, soy socio del Club Valle y quiero reportar una falla.\n\nZona: \nQué pasa: \nMi nombre y número de socio: ";
+export const waLink = () => `https://wa.me/${(CFG.wa || "").replace(/\D/g, "")}?text=${encodeURIComponent(WA_MENSAJE)}`;
+export const etiquetaPersona = (x) => x ? `${x.nombre}${x.tipo === "externo" ? " (externo" + (x.empresa ? " · " + x.empresa : "") + ")" : ""}` : "—";
 
 /* ---------- formato ---------- */
 export const fFecha = (d) => new Date(d).toLocaleString("es-MX", { timeZone: TZ, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
@@ -90,14 +96,14 @@ export function qrDataUrl(texto) {
 
 /* ---------- permisos de pantalla (el servidor es quien decide de verdad) ---------- */
 export function acciones(o, p) {
-  const a = { asignar: false, estatus: [], cerrar: false, reabrir: false, comentar: p.rol !== "gerente", foto: p.rol !== "gerente" };
+  const a = { asignar: false, estatus: [], cerrar: false, reabrir: false, reasignar: [], duplicado: false, comentar: p.rol !== "gerente", foto: p.rol !== "gerente" };
   const vivo = ["asignada", "en_proceso", "en_espera"].includes(o.estatus);
   if (p.rol === "supervisor" && p.area === o.area) {
     a.asignar = ["nueva", "asignada", "en_proceso", "en_espera"].includes(o.estatus);
     if (vivo) a.estatus = ["en_proceso", "en_espera", "resuelta"];
     if (o.estatus === "resuelta") { a.cerrar = true; a.reabrir = true; }
+    if (o.estatus !== "cerrada") { a.reasignar = AREAS.filter((x) => x !== o.area); a.duplicado = true; }
   }
-  if (p.rol === "operativo" && o.asignado_a === p.id && vivo) a.estatus = ["en_proceso", "en_espera", "resuelta"];
   a.estatus = a.estatus.filter((e) => e !== o.estatus);
   return a;
 }

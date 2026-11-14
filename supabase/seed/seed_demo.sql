@@ -3,7 +3,7 @@
 -- Contraseña de todas las cuentas de demo: Valle2026!
 
 -- ============================================================
--- 1. Usuarios de demo (personal ficticio)
+-- 1. Usuarios de demo (quienes inician sesión; ficticios)
 -- ============================================================
 do $$
 declare
@@ -14,13 +14,11 @@ begin
       ('a0000000-0000-4000-8000-000000000001'::uuid, 'gerente@clubvalle-demo.test',  'Roberto Salinas',   'gerente'::public.rol_usuario,     null::public.area_servicio,     null::public.departamento),
       ('a0000000-0000-4000-8000-000000000002'::uuid, 'sup.mant@clubvalle-demo.test', 'Luis Treviño',      'supervisor'::public.rol_usuario,  'mantenimiento'::public.area_servicio, null::public.departamento),
       ('a0000000-0000-4000-8000-000000000003'::uuid, 'sup.int@clubvalle-demo.test',  'Marisol Garza',     'supervisor'::public.rol_usuario,  'intendencia'::public.area_servicio,   null::public.departamento),
-      ('a0000000-0000-4000-8000-000000000004'::uuid, 'op.mant1@clubvalle-demo.test', 'Jorge Castillo',    'operativo'::public.rol_usuario,   'mantenimiento'::public.area_servicio, null::public.departamento),
-      ('a0000000-0000-4000-8000-000000000005'::uuid, 'op.mant2@clubvalle-demo.test', 'Arturo Medina',     'operativo'::public.rol_usuario,   'mantenimiento'::public.area_servicio, null::public.departamento),
-      ('a0000000-0000-4000-8000-000000000006'::uuid, 'op.int1@clubvalle-demo.test',  'Rosa Elena Ríos',   'operativo'::public.rol_usuario,   'intendencia'::public.area_servicio,   null::public.departamento),
-      ('a0000000-0000-4000-8000-000000000007'::uuid, 'op.int2@clubvalle-demo.test',  'Patricia Núñez',    'operativo'::public.rol_usuario,   'intendencia'::public.area_servicio,   null::public.departamento),
       ('a0000000-0000-4000-8000-000000000008'::uuid, 'sol.ayb@clubvalle-demo.test',  'Daniela Cantú',     'solicitante'::public.rol_usuario, null::public.area_servicio,     'alimentos_bebidas'::public.departamento),
       ('a0000000-0000-4000-8000-000000000009'::uuid, 'sol.dep@clubvalle-demo.test',  'Mauricio Leal',     'solicitante'::public.rol_usuario, null::public.area_servicio,     'deportes'::public.departamento),
-      ('a0000000-0000-4000-8000-000000000010'::uuid, 'sol.adm@clubvalle-demo.test',  'Karla Benavides',   'solicitante'::public.rol_usuario, null::public.area_servicio,     'administracion'::public.departamento)
+      ('a0000000-0000-4000-8000-000000000010'::uuid, 'sol.adm@clubvalle-demo.test',  'Karla Benavides',   'solicitante'::public.rol_usuario, null::public.area_servicio,     'administracion'::public.departamento),
+      ('a0000000-0000-4000-8000-000000000011'::uuid, 'sup.compras@clubvalle-demo.test', 'Héctor Ibarra',  'supervisor'::public.rol_usuario,  'compras'::public.area_servicio,       null::public.departamento),
+      ('a0000000-0000-4000-8000-000000000012'::uuid, 'sol.seg@clubvalle-demo.test',  'Sergio Lozano',     'solicitante'::public.rol_usuario, null::public.area_servicio,     'seguridad'::public.departamento)
     ) as t(id, email, nombre, rol, area, departamento)
   loop
     insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at,
@@ -70,6 +68,23 @@ on conflict (nombre, area) do nothing;
 -- ============================================================
 truncate public.orden_fotos, public.orden_eventos, public.ordenes restart identity cascade;
 
+-- El personal operativo ya no inicia sesión: se quitan las cuentas de la versión anterior.
+delete from auth.users where id in (
+  'a0000000-0000-4000-8000-000000000004', 'a0000000-0000-4000-8000-000000000005',
+  'a0000000-0000-4000-8000-000000000006', 'a0000000-0000-4000-8000-000000000007');
+
+-- Personal por área (internos y externos). Los gestiona el supervisor, sin acceso al sistema.
+insert into public.personal (id, nombre, area, tipo, empresa, activo) values
+  ('a0000000-0000-4000-8000-000000000004', 'Jorge Castillo',   'mantenimiento', 'interno', null, true),
+  ('a0000000-0000-4000-8000-000000000005', 'Arturo Medina',    'mantenimiento', 'interno', null, true),
+  ('a0000000-0000-4000-8000-000000000020', 'Plomería Regio',   'mantenimiento', 'externo', 'Plomería Regio S.A.', true),
+  ('a0000000-0000-4000-8000-000000000021', 'Climas del Norte', 'mantenimiento', 'externo', 'Climas del Norte', true),
+  ('a0000000-0000-4000-8000-000000000006', 'Rosa Elena Ríos',  'intendencia',   'interno', null, true),
+  ('a0000000-0000-4000-8000-000000000007', 'Patricia Núñez',   'intendencia',   'interno', null, true),
+  ('a0000000-0000-4000-8000-000000000022', 'Sandra Ochoa',     'compras',       'interno', null, true)
+on conflict (id) do update set nombre = excluded.nombre, area = excluded.area, tipo = excluded.tipo,
+  empresa = excluded.empresa, activo = true;
+
 do $$
 declare
   tpl jsonb := '[
@@ -112,9 +127,9 @@ declare
   g uuid := 'a0000000-0000-4000-8000-000000000001';
   sup_m uuid := 'a0000000-0000-4000-8000-000000000002';
   sup_i uuid := 'a0000000-0000-4000-8000-000000000003';
-  ops_m uuid[] := array['a0000000-0000-4000-8000-000000000004','a0000000-0000-4000-8000-000000000005']::uuid[];
+  ops_m uuid[] := array['a0000000-0000-4000-8000-000000000004','a0000000-0000-4000-8000-000000000005','a0000000-0000-4000-8000-000000000020','a0000000-0000-4000-8000-000000000021']::uuid[];
   ops_i uuid[] := array['a0000000-0000-4000-8000-000000000006','a0000000-0000-4000-8000-000000000007']::uuid[];
-  sols  uuid[] := array['a0000000-0000-4000-8000-000000000008','a0000000-0000-4000-8000-000000000009','a0000000-0000-4000-8000-000000000010']::uuid[];
+  sols  uuid[] := array['a0000000-0000-4000-8000-000000000008','a0000000-0000-4000-8000-000000000009','a0000000-0000-4000-8000-000000000010','a0000000-0000-4000-8000-000000000012']::uuid[];
 
   i int; idx int; t jsonb;
   v_zona bigint; v_cat bigint; v_area public.area_servicio;
@@ -144,9 +159,9 @@ begin
     select c.id, c.area into v_cat, v_area from public.categorias c where c.nombre = t->>1;
 
     v_sup := case v_area when 'mantenimiento' then sup_m else sup_i end;
-    v_op  := case v_area when 'mantenimiento' then ops_m[1 + i % 2] else ops_i[1 + i % 2] end;
+    v_op  := case v_area when 'mantenimiento' then ops_m[1 + i % 4] else ops_i[1 + i % 2] end;
     v_rep := case when i % 9 = 0 then (case v_area when 'mantenimiento' then sup_i else sup_m end)
-                  else sols[1 + i % 3] end;
+                  else sols[1 + i % 4] end;
 
     days_ago := case when i <= 36 then 58 - (i - 1) * (44.0 / 35) else 13 - (i - 37) * (12.5 / 15) end;
     base_day := (now() at time zone 'America/Monterrey')::date - floor(days_ago)::int;
@@ -190,23 +205,74 @@ begin
     end if;
     if v_estado in ('en_proceso', 'en_espera', 'resuelta', 'cerrada') then
       insert into public.orden_eventos (orden_id, autor_id, tipo, estatus_anterior, estatus_nuevo, comentario, created_at)
-      values (v_id, v_op, 'cambio_estatus', 'asignada', 'en_proceso', c_proc[1 + i % 3], t_proc);
+      values (v_id, v_sup, 'cambio_estatus', 'asignada', 'en_proceso', c_proc[1 + i % 3], t_proc);
     end if;
     if usa_espera then
       insert into public.orden_eventos (orden_id, autor_id, tipo, estatus_anterior, estatus_nuevo, comentario, created_at)
-      values (v_id, v_op, 'cambio_estatus', 'en_proceso', 'en_espera', c_esp[1 + i % 2], t_esp);
+      values (v_id, v_sup, 'cambio_estatus', 'en_proceso', 'en_espera', c_esp[1 + i % 2], t_esp);
       if v_estado in ('resuelta', 'cerrada') then
         insert into public.orden_eventos (orden_id, autor_id, tipo, estatus_anterior, estatus_nuevo, comentario, created_at)
-        values (v_id, v_op, 'cambio_estatus', 'en_espera', 'en_proceso', 'Llegó la refacción; se reanuda el trabajo.', t_resume);
+        values (v_id, v_sup, 'cambio_estatus', 'en_espera', 'en_proceso', 'Llegó la refacción; se reanuda el trabajo.', t_resume);
       end if;
     end if;
     if v_estado in ('resuelta', 'cerrada') then
       insert into public.orden_eventos (orden_id, autor_id, tipo, estatus_anterior, estatus_nuevo, comentario, created_at)
-      values (v_id, v_op, 'cambio_estatus', 'en_proceso', 'resuelta', c_res[1 + i % 3], t_res);
+      values (v_id, v_sup, 'cambio_estatus', 'en_proceso', 'resuelta', c_res[1 + i % 3], t_res);
     end if;
     if v_estado = 'cerrada' then
       insert into public.orden_eventos (orden_id, autor_id, tipo, estatus_anterior, estatus_nuevo, comentario, created_at)
       values (v_id, v_sup, 'cambio_estatus', 'resuelta', 'cerrada', c_cerr[1 + i % 3], t_cerr);
     end if;
   end loop;
+end $$;
+
+-- ============================================================
+-- 4. Escenarios de la sesión 2: reasignación a Compras y reportes repetidos
+-- ============================================================
+do $$
+declare
+  sup_m uuid := 'a0000000-0000-4000-8000-000000000002';
+  sup_c uuid := 'a0000000-0000-4000-8000-000000000011';
+  comprador uuid := 'a0000000-0000-4000-8000-000000000022';
+  sol_dep uuid := 'a0000000-0000-4000-8000-000000000009';
+  sol_seg uuid := 'a0000000-0000-4000-8000-000000000012';
+  base public.ordenes;
+  d1 bigint; d2 bigint; v_folio text;
+begin
+  -- Orden 17 (en espera por refacción): pasa a Compras, que la atiende.
+  update public.ordenes
+     set area = 'compras', estatus = 'en_proceso', asignado_a = comprador,
+         updated_at = now() - interval '3 hours'
+   where id = 17;
+  insert into public.orden_eventos (orden_id, autor_id, tipo, estatus_anterior, estatus_nuevo, area_anterior, area_nueva, comentario, created_at)
+  values (17, sup_m, 'reasignacion', 'en_espera', 'nueva', 'mantenimiento', 'compras',
+          'Se requiere comprar el compresor; pasa a Compras.', now() - interval '6 hours');
+  insert into public.orden_eventos (orden_id, autor_id, tipo, estatus_anterior, estatus_nuevo, asignado_a, comentario, created_at)
+  values (17, sup_c, 'asignada', 'nueva', 'asignada', comprador, 'Pedir cotización a dos proveedores.', now() - interval '5 hours');
+  insert into public.orden_eventos (orden_id, autor_id, tipo, estatus_anterior, estatus_nuevo, comentario, created_at)
+  values (17, sup_c, 'cambio_estatus', 'asignada', 'en_proceso', 'Cotizaciones solicitadas.', now() - interval '3 hours');
+
+  -- Reporte repetido de la orden 28 (en proceso): uno ya cerrado como duplicado y otro todavía abierto.
+  select * into base from public.ordenes where id = 28;
+  v_folio := base.folio;
+
+  insert into public.ordenes (zona_id, categoria_id, descripcion, prioridad, riesgo_socios, reportado_por,
+                              estatus, created_at, updated_at, cerrada_at, duplicada_de, duplicada_folio, cierre_motivo)
+  values (base.zona_id, base.categoria_id, 'Lo mismo que se reportó: ' || lower(left(base.descripcion, 1)) || substr(base.descripcion, 2),
+          base.prioridad, base.riesgo_socios, sol_dep, 'cerrada',
+          now() - interval '2 days', now() - interval '47 hours', now() - interval '47 hours', 28, v_folio, 'duplicado')
+  returning id into d1;
+  insert into public.orden_eventos (orden_id, autor_id, tipo, estatus_nuevo, created_at)
+  values (d1, sol_dep, 'creada', 'nueva', now() - interval '2 days');
+  insert into public.orden_eventos (orden_id, autor_id, tipo, estatus_anterior, estatus_nuevo, comentario, created_at)
+  values (d1, sup_m, 'cambio_estatus', 'nueva', 'cerrada', 'Cerrada por reporte repetido de ' || v_folio || '.', now() - interval '47 hours');
+  insert into public.orden_eventos (orden_id, autor_id, tipo, comentario, created_at)
+  values (28, sup_m, 'comentario', 'Se cerró MAN-' || lpad(d1::text, 5, '0') || ' como reporte repetido de esta falla.', now() - interval '47 hours');
+
+  insert into public.ordenes (zona_id, categoria_id, descripcion, prioridad, riesgo_socios, reportado_por, created_at, updated_at)
+  values (base.zona_id, base.categoria_id, base.descripcion || ' (otra vez, sigue igual).',
+          base.prioridad, base.riesgo_socios, sol_seg, now() - interval '40 minutes', now() - interval '40 minutes')
+  returning id into d2;
+  insert into public.orden_eventos (orden_id, autor_id, tipo, estatus_nuevo, created_at)
+  values (d2, sol_seg, 'creada', 'nueva', now() - interval '40 minutes');
 end $$;

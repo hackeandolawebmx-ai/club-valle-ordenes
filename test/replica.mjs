@@ -20,6 +20,8 @@ for (const f of [
   "supabase/tests/stub_supabase.sql",
   "supabase/migrations/0001_modelo_ordenes.sql",
   "supabase/migrations/0003_cerrar_funciones_auxiliares.sql",
+  "supabase/migrations/0004_enums_seguridad_compras.sql",
+  "supabase/migrations/0005_personal_externos_duplicados.sql",
   "supabase/seed/seed_demo.sql",
 ]) await db.exec(sql(f));
 
@@ -61,7 +63,10 @@ async function rest(req, res, url) {
       const fn = partes[1]; const args = data ? JSON.parse(data) : {};
       const ks = Object.keys(args);
       if (!ID.test(fn) || ks.some((k) => !ID.test(k))) return json(res, 400, { message: "petición inválida" });
-      const j = await comoUsuario(req, `select row_to_json(t)::text as j from public.${fn}(${ks.map((k, i) => `${k} => $${i + 1}`).join(", ")}) t`, ks.map((k) => args[k]));
+      // PostgREST devuelve un arreglo cuando la función devuelve varias filas (setof / table).
+      const conjunto = (await db.query("select bool_or(proretset) as s from pg_proc where proname = $1 and pronamespace = 'public'::regnamespace", [fn])).rows[0].s;
+      const llamada = `public.${fn}(${ks.map((k, i) => `${k} => $${i + 1}`).join(", ")}) t`;
+      const j = await comoUsuario(req, conjunto ? `select coalesce(json_agg(t), '[]')::text as j from ${llamada}` : `select row_to_json(t)::text as j from ${llamada}`, ks.map((k) => args[k]));
       return json(res, 200, j || "null");
     }
     const tabla = partes[0];

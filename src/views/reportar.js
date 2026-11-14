@@ -1,5 +1,5 @@
-import { useState, useRef } from "preact/hooks";
-import { sb, AREA, PRIORIDAD, PRI_AYUDA, comprimir, subirFotos, errMsg, go } from "../lib.js";
+import { useState, useRef, useEffect } from "preact/hooks";
+import { sb, AREA, ESTATUS, PRIORIDAD, PRI_AYUDA, comprimir, subirFotos, errMsg, go } from "../lib.js";
 import { html, I } from "../ui.js";
 
 const MAX_FOTOS = 3;
@@ -16,8 +16,19 @@ export function Reportar({ ctx }) {
   const [riesgo, setRiesgo] = useState(false);
   const [fotos, setFotos] = useState([]);
   const [enviando, setEnviando] = useState(false);
+  const [similares, setSimilares] = useState([]);
+  const [distinta, setDistinta] = useState(false);
   const inp = useRef();
   const catSel = categorias.find((c) => String(c.id) === cat);
+
+  // Avisa si ya hay un reporte abierto de lo mismo en esa zona, antes de levantar otro.
+  useEffect(() => {
+    setDistinta(false);
+    if (!zona || !cat) { setSimilares([]); return; }
+    let vivo = true;
+    sb.rpc("ordenes_similares", { p_zona_id: Number(zona), p_categoria_id: Number(cat) }).then(({ data }) => { if (vivo) setSimilares(data || []); });
+    return () => { vivo = false; };
+  }, [zona, cat]);
 
   async function agregar(ev) {
     const nuevos = [];
@@ -52,7 +63,7 @@ export function Reportar({ ctx }) {
   }
   const mant = categorias.filter((c) => c.area === "mantenimiento");
   const inte = categorias.filter((c) => c.area === "intendencia");
-  const listo = zona && cat && desc.trim().length >= 5;
+  const listo = zona && cat && desc.trim().length >= 5 && (similares.length === 0 || distinta);
 
   return html`<div class="pagina angosta">
     <div class="head"><div><h1>Reportar una falla</h1>
@@ -76,6 +87,10 @@ export function Reportar({ ctx }) {
             <optgroup label="Intendencia">${inte.map((c) => html`<option value=${c.id}>${c.nombre}</option>`)}</optgroup>
           </select>
           ${catSel && html`<div class="destino">${I.flecha}Se enviará a <b>${AREA[catSel.area]}</b></div>`}</div>
+        ${similares.length > 0 && html`<div class="aviso-rep" role="status"><b>Ya hay un reporte abierto de esto en la zona</b>
+          <ul>${similares.map((s) => html`<li><span class="folio">${s.folio}</span> ${s.descripcion} <span class="muted">· ${ESTATUS[s.estatus]}</span></li>`)}</ul>
+          <div class="small">Si es la misma falla, ya está en atención y no hace falta reportarla de nuevo.</div>
+          <label class=${"check" + (distinta ? " on" : "")}><input type="checkbox" checked=${distinta} onChange=${(e) => setDistinta(e.target.checked)} /><span><b>Es otra falla, quiero reportarla</b></span></label></div>`}
         <div class="field"><label for="r-desc">Descripción</label>
           <textarea id="r-desc" value=${desc} onInput=${(e) => setDesc(e.target.value)} placeholder="¿Qué se ve mal o qué falla?" minlength="5" required></textarea></div>
       </fieldset>
@@ -97,7 +112,7 @@ export function Reportar({ ctx }) {
       </fieldset>
       <div class="form-pie">
         <button class="btn grande" disabled=${enviando || !listo}>${enviando ? "Enviando…" : "Enviar reporte"}</button>
-        ${!listo && html`<div class="small muted">Elige zona y tipo de falla, y describe qué pasa.</div>`}
+        ${!listo && html`<div class="small muted">${similares.length > 0 && !distinta ? "Confirma que es otra falla para poder enviarla." : "Elige zona y tipo de falla, y describe qué pasa."}</div>`}
       </div>
     </form></div>`;
 }

@@ -33,6 +33,7 @@ export const I = {
   mas2: ico(html`<path d="M12 5v14M5 12h14" />`),
   flecha: ico(html`<path d="M9 6l6 6-6 6" />`),
   inbox: ico(html`<path d="M3.500 13.500l2.700-8h11.600l2.700 8v5.500h-17z" /><path d="M3.500 13.500h5l1 2.500h5l1-2.500h5" />`),
+  equipo: ico(html`<circle cx="12" cy="6.500" r="2.500" /><circle cx="5.500" cy="17.500" r="2.500" /><circle cx="18.500" cy="17.500" r="2.500" /><path d="M12 9v3M12 12H5.500v3M12 12h6.500v3" />`),
   persona: ico(html`<circle cx="9" cy="8.500" r="3" /><path d="M3.500 19.500c.6-3 2.800-4.500 5.500-4.500s4.900 1.500 5.500 4.500M17 8v6M14 11h6" />`),
 };
 

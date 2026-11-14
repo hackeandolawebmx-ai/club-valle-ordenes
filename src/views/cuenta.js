@@ -12,8 +12,9 @@ export function Cuenta({ ctx }) {
     </div>
     <div class="card"><h3>Qué puedes hacer</h3>
       <ul class="puedes">${PUEDES[p.rol].map((t) => html`<li>${I.check}<span>${t}</span></li>`)}</ul>
-      ${p.rol === "gerente" && html`<div class="small muted">Tu vista es de solo lectura: asignar, atender y cerrar lo hacen supervisores y operativos.</div>`}
+      ${p.rol === "gerente" && html`<div class="small muted">Tu vista es de solo lectura: asignar, atender y cerrar lo hacen los supervisores de cada área.</div>`}
     </div>
+    ${p.rol === "supervisor" && html`<div><a class="btn sec" href="#/qr">${I.qr}Imprimir QR por zona</a></div>`}
     <div class="nota">${I.nota}<span>Cada cambio queda en el historial de la orden con autor y hora.</span></div>
     <div><button class="btn peligro" onClick=${() => sb.auth.signOut()}>${I.salir}Cerrar sesión</button></div>
   </div>`;

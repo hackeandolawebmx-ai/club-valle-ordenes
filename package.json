@@ -6,7 +6,8 @@
     "build": "node build.mjs",
     "build:local": "node build.mjs --local",
     "replica": "node test/replica.mjs",
-    "test:e2e": "node test/e2e.cjs"
+    "test:e2e": "node test/e2e.cjs",
+    "test:permisos": "node test/permisos.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",

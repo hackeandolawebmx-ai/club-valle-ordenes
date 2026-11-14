@@ -10,16 +10,17 @@ import { Detalle } from "./views/detalle.js";
 import { Dashboard } from "./views/dashboard.js";
 import { QRs } from "./views/qr.js";
 import { Cuenta } from "./views/cuenta.js";
+import { Equipo } from "./views/equipo.js";
 
 function tabsPara(p) {
   const mas = { id: "mas", t: "Más", i: I.mas };
   const rep = { id: "reportar", t: "Reportar", i: I.escudo, centro: true };
-  if (p.rol === "gerente") return [{ id: "dashboard", t: "Dashboard", i: I.grafica }, { id: "ordenes", t: "Órdenes", i: I.lista }, { id: "qr", t: "QR", i: I.qr }, mas];
-  if (p.rol === "supervisor") return [{ id: "ordenes", t: "Bandeja", i: I.lista }, { id: "dashboard", t: "Dashboard", i: I.grafica }, rep, { id: "qr", t: "QR", i: I.qr }, mas];
-  if (p.rol === "operativo") return [{ id: "ordenes", t: "Mis órdenes", i: I.lista }, rep, mas];
+  const eq = { id: "equipo", t: "Equipo", i: I.equipo };
+  if (p.rol === "gerente") return [{ id: "dashboard", t: "Dashboard", i: I.grafica }, { id: "ordenes", t: "Órdenes", i: I.lista }, { id: "qr", t: "QR", i: I.qr }, eq, mas];
+  if (p.rol === "supervisor") return [{ id: "ordenes", t: "Bandeja", i: I.lista }, { id: "dashboard", t: "Dashboard", i: I.grafica }, rep, eq, mas];
   return [{ id: "ordenes", t: "Mis reportes", i: I.lista }, rep, mas];
 }
-const TITULOS = { dashboard: "Dashboard", ordenes: "Órdenes", orden: "Orden", reportar: "Reportar", qr: "QR por zona", mas: "Mi cuenta" };
+const TITULOS = { dashboard: "Dashboard", ordenes: "Órdenes", orden: "Orden", reportar: "Reportar", qr: "QR por zona", equipo: "Equipo", mas: "Mi cuenta" };
 
 function useHash() {
   const [hs, setHs] = useState(location.hash.slice(1) || "/");
@@ -32,7 +33,7 @@ const Aviso = ({ aviso }) => html`<div class="toast-zona" role="status" aria-liv
 function App() {
   const [sesion, setSesion] = useState(undefined);
   const [perfil, setPerfil] = useState(null);
-  const [base, setBase] = useState({ zonas: [], categorias: [], perfiles: [] });
+  const [base, setBase] = useState({ zonas: [], categorias: [], perfiles: [], personal: [] });
   const [ordenes, setOrdenes] = useState([]);
   const [cargado, setCargado] = useState(false);
   const [fallo, setFallo] = useState(null);
@@ -64,16 +65,17 @@ function App() {
 
   const cargarBase = useCallback(async () => {
     setFallo(null);
-    const [p, z, c, ps] = await Promise.all([
+    const [p, z, c, ps, pe] = await Promise.all([
       sb.from("perfiles").select("*").eq("id", uid).maybeSingle(),
       sb.from("zonas").select("*").eq("activa", true).order("nombre"),
       sb.from("categorias").select("*").order("nombre"),
       sb.from("perfiles").select("*"),
+      sb.from("personal").select("*").order("nombre"),
     ]);
-    const error = p.error || z.error || c.error || ps.error;
+    const error = p.error || z.error || c.error || ps.error || pe.error;
     if (error) return setFallo("No pudimos cargar tus datos: " + errMsg(error));
     if (!p.data) return setFallo("Tu cuenta no tiene un perfil activo en el club. Pide a un administrador que la dé de alta.");
-    setBase({ zonas: z.data || [], categorias: c.data || [], perfiles: ps.data || [] });
+    setBase({ zonas: z.data || [], categorias: c.data || [], perfiles: ps.data || [], personal: pe.data || [] });
     setPerfil(p.data);
     if (location.hash === "" || location.hash === "#/" || location.hash === "#") {
       go(sessionStorage.getItem("cv_zona") ? "/reportar" : p.data.rol === "gerente" ? "/dashboard" : "/ordenes");
@@ -106,7 +108,7 @@ function App() {
     <div class="row centro"><button class="btn" onClick=${cargarBase}>Reintentar</button><button class="btn sec" onClick=${() => sb.auth.signOut()}>Cerrar sesión</button></div><//></div>`;
   if (!perfil) return html`<${Cargando} texto="Cargando tu perfil…" />`;
 
-  const ctx = { perfil, ...base, ordenes, cargado, refrescar, toast };
+  const ctx = { perfil, ...base, ordenes, cargado, refrescar, recargarBase: cargarBase, toast };
   const tabs = tabsPara(perfil);
   const gestiona = ["gerente", "supervisor"].includes(perfil.rol);
   let vista;
@@ -114,6 +116,7 @@ function App() {
   else if (ruta === "reportar" && perfil.rol !== "gerente") vista = html`<${Reportar} ctx=${ctx} />`;
   else if (ruta === "dashboard" && gestiona) vista = html`<${Dashboard} ctx=${ctx} />`;
   else if (ruta === "qr" && gestiona) vista = html`<${QRs} ctx=${ctx} />`;
+  else if (ruta === "equipo" && gestiona) vista = html`<${Equipo} ctx=${ctx} />`;
   else if (ruta === "mas") vista = html`<${Cuenta} ctx=${ctx} />`;
   else vista = html`<${Ordenes} key=${arg || ""} ctx=${ctx} filtro=${arg} />`;
   const activo = ruta === "orden" ? "ordenes" : tabs.some((t) => t.id === ruta) ? ruta : "ordenes";

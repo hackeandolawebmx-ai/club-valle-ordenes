@@ -407,3 +407,53 @@ textarea.corto{min-height:68px}
 }
 
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+/* ===== Sesión 2: entrada socio/interno, equipo, reasignación y duplicados ===== */
+.timeline .t-reasignacion{--c:var(--oak)}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;border-radius:999px;padding:2px 9px;background:var(--hundido);color:var(--ink-2)}
+.tag.ext{background:var(--proceso-bg);color:var(--proceso-fg)} .tag.int{background:var(--resuelta-bg);color:var(--resuelta-fg)}
+
+/* login: elegir socio o interno */
+.elige{display:flex;flex-direction:column;gap:12px}
+.opcion{display:flex;align-items:center;gap:14px;text-align:left;width:100%;padding:16px;border:1.5px solid var(--line-2);border-radius:var(--r-m);background:var(--card);transition:border-color .15s,box-shadow .15s}
+.opcion:hover{border-color:var(--oak);box-shadow:var(--sombra-1)}
+.opcion>span:nth-child(2){flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.opcion b{font-size:16px;color:var(--oak-d)} .opcion small{font-size:13px;color:var(--muted)}
+.opcion-ico{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--v1955);color:var(--oak-d);flex:none}
+.opcion>.ico{color:var(--muted);flex:none}
+.login .volver{background:none;border:0;color:var(--oak)}
+.wa-previa{margin:0;white-space:pre-wrap;font:inherit;font-size:14px;background:var(--hundido);border-radius:var(--r-m);padding:14px;color:var(--ink-2);border-left:4px solid var(--menta)}
+a.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+
+/* equipo / organigrama */
+.org{display:flex;flex-direction:column;gap:0;margin-bottom:22px}
+.org-nivel{display:flex;justify-content:center}
+.org-nodo{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 22px;border-radius:var(--r-m);background:var(--oak);color:#fff;text-align:center}
+.org-nodo small{text-transform:uppercase;letter-spacing:.08em;font-size:11px;opacity:.8} .org-nodo b{font-family:var(--serif);font-weight:400;font-size:18px}
+.org-nodo .muted{color:rgba(255,255,255,.75);font-size:12.5px}
+.org-linea{width:2px;height:20px;background:var(--line-2);margin:0 auto}
+.org-areas{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));align-items:start}
+.org-area{display:flex;flex-direction:column;gap:10px} .org-area.mia{border-color:var(--menta);box-shadow:0 0 0 2px var(--v1955)}
+.org-area header{display:flex;flex-direction:column;gap:2px}
+.org-sup{display:flex;flex-direction:column;gap:4px;padding:10px 12px;background:var(--hundido);border-radius:var(--r-s)}
+.sup-et{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.org-area h4,.nuevo-personal h4{margin:4px 0 0;font-size:13px;font-weight:600;color:var(--ink-2);display:flex;gap:8px;align-items:center}
+.personas{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.persona{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.persona.baja{opacity:.55}
+.persona-n{display:flex;flex-direction:column;flex:1;min-width:0;line-height:1.2} .persona-n small{color:var(--muted);font-size:12px}
+.nuevo-personal{border-top:1px solid var(--line);padding-top:12px}
+.sec-tit{margin:6px 0 12px}
+.deptos{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-bottom:18px}
+.depto{display:flex;flex-direction:column;gap:8px}
+
+/* avisos de reporte repetido y de cierre por duplicado */
+.aviso-rep{display:flex;flex-direction:column;gap:8px;background:var(--proceso-bg);color:var(--ink);border:1px solid var(--proceso);border-radius:var(--r-m);padding:12px 14px}
+.aviso-rep b{color:var(--proceso-fg)} .aviso-rep ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.aviso-dup{display:flex;gap:10px;align-items:flex-start;background:var(--cerrada-bg);border-radius:var(--r-m);padding:10px 12px;font-size:14px}
+.aviso-dup .ico{margin-top:1px;flex:none}
+.dup-fila{display:flex;flex-direction:column;gap:6px;padding-top:10px;border-top:1px solid var(--line)}
+.dup-fila:first-of-type{border-top:0;padding-top:0}
+.dup-d{font-size:13.5px;color:var(--ink-2)}
+.reasigna .row{flex-wrap:nowrap} .reasigna select{flex:1;min-width:0}
+.aviso-rep .check{background:#fff} .aviso-rep .check.on{border-color:var(--oak);background:var(--v1955)} .aviso-rep .check input{accent-color:var(--oak)}
