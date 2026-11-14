@@ -59,8 +59,8 @@ const log = []; const ok = (c, m) => { log.push((c ? "OK   " : "FALLA ") + m); i
   await p.screenshot({ path: OUT + "/05-sup-bandeja.png" });
   await abrir(p, folio);
   const ops = await p.locator("#d-op option").allTextContents();
-  ok(ops.some((x) => x === "Jorge Castillo") && ops.some((x) => /Plomería Regio \(externo/.test(x)) && !ops.some((x) => /Rosa|Patricia|Sandra/.test(x)), "asigna a personal interno y externo de su área, no de otras");
-  await p.selectOption("#d-op", { label: "Jorge Castillo" });
+  ok(ops.some((x) => x.startsWith("Jorge Castillo · Técnico electricista")) && ops.some((x) => /Plomería Regio \(externo/.test(x)) && !ops.some((x) => /Rosa|Patricia|Sandra/.test(x)), "asigna a personal interno y externo de su área, no de otras");
+  await p.selectOption("#d-op", { label: "Jorge Castillo · Técnico electricista" });
   await p.fill(".card.verde textarea", "Atender hoy, hay socios cerca.");
   await p.click('button:text-is("Asignar")'); await p.waitForSelector('.badge.b-asignada');
   await p.selectOption("#d-op", { label: "Plomería Regio (externo · Plomería Regio S.A.)" }); await p.click('button:text-is("Reasignar")'); await p.waitForSelector(".kv .tag.ext");
@@ -77,8 +77,8 @@ const log = []; const ok = (c, m) => { log.push((c ? "OK   " : "FALLA ") + m); i
 
   p = await mk(); await entrar(p, "Héctor Ibarra"); await abrir(p, folio);
   const opsC = await p.locator("#d-op option").allTextContents();
-  ok(opsC.some((x) => x === "Sandra Ochoa") && !opsC.some((x) => /Jorge|Plomería/.test(x)), "compras asigna solo a su personal");
-  await p.selectOption("#d-op", { label: "Sandra Ochoa" }); await p.click('button:text-is("Asignar")'); await p.waitForSelector('.badge.b-asignada');
+  ok(opsC.some((x) => x.startsWith("Sandra Ochoa")) && !opsC.some((x) => /Jorge|Plomería/.test(x)), "compras asigna solo a su personal");
+  await p.selectOption("#d-op", { label: "Sandra Ochoa · Comprador" }); await p.click('button:text-is("Asignar")'); await p.waitForSelector('.badge.b-asignada');
   await p.selectOption("#d-area", "mantenimiento"); await p.fill(".card.verde textarea", "Llegó la bomba; instalar.");
   await p.click('button:text-is("Reasignar área")'); await p.waitForSelector('.toast:has-text("reasignada a Mantenimiento")');
   await p.waitForSelector("h1:has-text('Bandeja de compras')");
@@ -88,7 +88,7 @@ const log = []; const ok = (c, m) => { log.push((c ? "OK   " : "FALLA ") + m); i
 
   // --- el supervisor lleva el trabajo y cierra
   p = await mk(); await entrar(p, "Luis Treviño"); await abrir(p, folio);
-  await p.selectOption("#d-op", { label: "Jorge Castillo" }); await p.click('button:text-is("Asignar")'); await p.waitForSelector('.badge.b-asignada');
+  await p.selectOption("#d-op", { label: "Jorge Castillo · Técnico electricista" }); await p.click('button:text-is("Asignar")'); await p.waitForSelector('.badge.b-asignada');
   await p.click('button:text-is("Iniciar / reanudar")'); await p.waitForSelector('.badge.b-en_proceso');
   await p.fill(".card.verde textarea", "Jorge terminó, queda probado.");
   await p.click('button:text-is("Marcar resuelta")'); await p.waitForSelector('.badge.b-resuelta');

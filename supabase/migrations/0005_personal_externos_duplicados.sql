@@ -14,6 +14,8 @@ create table public.personal (
   area       public.area_servicio not null,
   tipo       text not null default 'interno' check (tipo in ('interno', 'externo')),
   empresa    text,
+  puesto     text,   -- p. ej. Técnico plomero, Auxiliar de limpieza
+  zona_asignada text, -- zona o departamento donde trabaja, si aplica
   activo     boolean not null default true,
   created_at timestamptz not null default now()
 );
@@ -271,7 +273,7 @@ as $$
 $$;
 
 -- Alta y baja de personal por el supervisor, solo en su área.
-create function public.agregar_personal(p_nombre text, p_tipo text default 'interno', p_empresa text default null)
+create function public.agregar_personal(p_nombre text, p_tipo text default 'interno', p_empresa text default null, p_puesto text default null, p_zona text default null)
 returns public.personal
 language plpgsql security definer set search_path = public
 as $$
@@ -279,8 +281,8 @@ declare v public.personal;
 begin
   if public.mi_rol() is distinct from 'supervisor' then raise exception 'Solo un supervisor puede agregar personal'; end if;
   if p_tipo not in ('interno', 'externo') then raise exception 'Tipo inválido'; end if;
-  insert into public.personal (nombre, area, tipo, empresa)
-  values (trim(p_nombre), public.mi_area(), p_tipo, nullif(trim(p_empresa), ''))
+  insert into public.personal (nombre, area, tipo, empresa, puesto, zona_asignada)
+  values (trim(p_nombre), public.mi_area(), p_tipo, nullif(trim(p_empresa), ''), nullif(trim(p_puesto), ''), nullif(trim(p_zona), ''))
   returning * into v;
   return v;
 end;
@@ -303,13 +305,13 @@ revoke execute on function public.asignar_orden(bigint, uuid, text),
   public.reasignar_area(bigint, public.area_servicio, text),
   public.cerrar_por_duplicado(bigint, bigint, text),
   public.ordenes_similares(bigint, bigint, bigint),
-  public.agregar_personal(text, text, text),
+  public.agregar_personal(text, text, text, text, text),
   public.activar_personal(uuid, boolean) from public, anon;
 grant execute on function public.asignar_orden(bigint, uuid, text),
   public.reasignar_area(bigint, public.area_servicio, text),
   public.cerrar_por_duplicado(bigint, bigint, text),
   public.ordenes_similares(bigint, bigint, bigint),
-  public.agregar_personal(text, text, text),
+  public.agregar_personal(text, text, text, text, text),
   public.activar_personal(uuid, boolean) to authenticated;
 
 -- ============================================================
@@ -326,7 +328,7 @@ select
   c.id as categoria_id, c.nombre as categoria,
   o.departamento_solicitante,
   o.reportado_por, rp.nombre as reportado_por_nombre,
-  o.asignado_a, ap.nombre as asignado_a_nombre, ap.tipo as asignado_a_tipo, ap.empresa as asignado_a_empresa,
+  o.asignado_a, ap.nombre as asignado_a_nombre, ap.tipo as asignado_a_tipo, ap.empresa as asignado_a_empresa, ap.puesto as asignado_a_puesto,
   o.duplicada_de, o.duplicada_folio, o.cierre_motivo,
   o.created_at, o.updated_at, o.asignada_at, o.resuelta_at, o.cerrada_at,
   extract(day from (coalesce(o.cerrada_at, now()) - o.created_at))::int as dias_abierta

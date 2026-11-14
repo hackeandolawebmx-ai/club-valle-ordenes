@@ -18,6 +18,7 @@ begin
       ('a0000000-0000-4000-8000-000000000009'::uuid, 'sol.dep@clubvalle-demo.test',  'Mauricio Leal',     'solicitante'::public.rol_usuario, null::public.area_servicio,     'deportes'::public.departamento),
       ('a0000000-0000-4000-8000-000000000010'::uuid, 'sol.adm@clubvalle-demo.test',  'Karla Benavides',   'solicitante'::public.rol_usuario, null::public.area_servicio,     'administracion'::public.departamento),
       ('a0000000-0000-4000-8000-000000000011'::uuid, 'sup.compras@clubvalle-demo.test', 'Héctor Ibarra',  'supervisor'::public.rol_usuario,  'compras'::public.area_servicio,       null::public.departamento),
+      ('a0000000-0000-4000-8000-000000000013'::uuid, 'sup.mant2@clubvalle-demo.test', 'Héctor Barrera', 'supervisor'::public.rol_usuario, 'mantenimiento'::public.area_servicio, null::public.departamento),
       ('a0000000-0000-4000-8000-000000000012'::uuid, 'sol.seg@clubvalle-demo.test',  'Sergio Lozano',     'solicitante'::public.rol_usuario, null::public.area_servicio,     'seguridad'::public.departamento)
     ) as t(id, email, nombre, rol, area, departamento)
   loop
@@ -74,16 +75,22 @@ delete from auth.users where id in (
   'a0000000-0000-4000-8000-000000000006', 'a0000000-0000-4000-8000-000000000007');
 
 -- Personal por área (internos y externos). Los gestiona el supervisor, sin acceso al sistema.
-insert into public.personal (id, nombre, area, tipo, empresa, activo) values
-  ('a0000000-0000-4000-8000-000000000004', 'Jorge Castillo',   'mantenimiento', 'interno', null, true),
-  ('a0000000-0000-4000-8000-000000000005', 'Arturo Medina',    'mantenimiento', 'interno', null, true),
-  ('a0000000-0000-4000-8000-000000000020', 'Plomería Regio',   'mantenimiento', 'externo', 'Plomería Regio S.A.', true),
-  ('a0000000-0000-4000-8000-000000000021', 'Climas del Norte', 'mantenimiento', 'externo', 'Climas del Norte', true),
-  ('a0000000-0000-4000-8000-000000000006', 'Rosa Elena Ríos',  'intendencia',   'interno', null, true),
-  ('a0000000-0000-4000-8000-000000000007', 'Patricia Núñez',   'intendencia',   'interno', null, true),
-  ('a0000000-0000-4000-8000-000000000022', 'Sandra Ochoa',     'compras',       'interno', null, true)
+insert into public.personal (id, nombre, area, tipo, empresa, puesto, zona_asignada, activo) values
+  ('a0000000-0000-4000-8000-000000000004', 'Jorge Castillo',   'mantenimiento', 'interno', null, 'Técnico electricista', null, true),
+  ('a0000000-0000-4000-8000-000000000005', 'Arturo Medina',    'mantenimiento', 'interno', null, 'Técnico plomero', null, true),
+  ('a0000000-0000-4000-8000-000000000023', 'Iván Rangel',      'mantenimiento', 'interno', null, 'Técnico en aire acondicionado', null, true),
+  ('a0000000-0000-4000-8000-000000000024', 'Rubén Saldívar',   'mantenimiento', 'interno', null, 'Técnico carpintero', null, true),
+  ('a0000000-0000-4000-8000-000000000025', 'Luis Alonso Tapia','mantenimiento', 'interno', null, 'Auxiliar de alberca', 'Alberca', true),
+  ('a0000000-0000-4000-8000-000000000026', 'Vicente Márquez',  'mantenimiento', 'interno', null, 'Jardinero', 'Jardines', true),
+  ('a0000000-0000-4000-8000-000000000020', 'Plomería Regio',   'mantenimiento', 'externo', 'Plomería Regio S.A.', 'Proveedor de plomería', null, true),
+  ('a0000000-0000-4000-8000-000000000021', 'Climas del Norte', 'mantenimiento', 'externo', 'Climas del Norte', 'Proveedor de aire acondicionado', null, true),
+  ('a0000000-0000-4000-8000-000000000006', 'Rosa Elena Ríos',  'intendencia',   'interno', null, 'Auxiliar de limpieza', 'Vestidor de damas', true),
+  ('a0000000-0000-4000-8000-000000000007', 'Patricia Núñez',   'intendencia',   'interno', null, 'Auxiliar de limpieza', 'Áreas públicas', true),
+  ('a0000000-0000-4000-8000-000000000027', 'Agustín Montes',   'intendencia',   'interno', null, 'Auxiliar de limpieza', 'Vestidor de caballeros', true),
+  ('a0000000-0000-4000-8000-000000000028', 'Anita Guerra',     'intendencia',   'interno', null, 'Auxiliar de limpieza', 'Gimnasio', true),
+  ('a0000000-0000-4000-8000-000000000022', 'Sandra Ochoa',     'compras',       'interno', null, 'Comprador', null, true)
 on conflict (id) do update set nombre = excluded.nombre, area = excluded.area, tipo = excluded.tipo,
-  empresa = excluded.empresa, activo = true;
+  empresa = excluded.empresa, puesto = excluded.puesto, zona_asignada = excluded.zona_asignada, activo = true;
 
 do $$
 declare
@@ -127,7 +134,7 @@ declare
   g uuid := 'a0000000-0000-4000-8000-000000000001';
   sup_m uuid := 'a0000000-0000-4000-8000-000000000002';
   sup_i uuid := 'a0000000-0000-4000-8000-000000000003';
-  ops_m uuid[] := array['a0000000-0000-4000-8000-000000000004','a0000000-0000-4000-8000-000000000005','a0000000-0000-4000-8000-000000000020','a0000000-0000-4000-8000-000000000021']::uuid[];
+  ops_m uuid[] := array['a0000000-0000-4000-8000-000000000004','a0000000-0000-4000-8000-000000000005','a0000000-0000-4000-8000-000000000023','a0000000-0000-4000-8000-000000000020']::uuid[];
   ops_i uuid[] := array['a0000000-0000-4000-8000-000000000006','a0000000-0000-4000-8000-000000000007']::uuid[];
   sols  uuid[] := array['a0000000-0000-4000-8000-000000000008','a0000000-0000-4000-8000-000000000009','a0000000-0000-4000-8000-000000000010','a0000000-0000-4000-8000-000000000012']::uuid[];
 

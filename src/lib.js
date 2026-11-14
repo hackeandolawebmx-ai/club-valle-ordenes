@@ -41,7 +41,7 @@ export const PUEDES = {
 /* Mensaje que se envía por WhatsApp cuando quien reporta es socio. */
 export const WA_MENSAJE = "Hola, soy socio del Club Valle y quiero reportar una falla.\n\nZona: \nQué pasa: \nMi nombre y número de socio: ";
 export const waLink = () => `https://wa.me/${(CFG.wa || "").replace(/\D/g, "")}?text=${encodeURIComponent(WA_MENSAJE)}`;
-export const etiquetaPersona = (x) => x ? `${x.nombre}${x.tipo === "externo" ? " (externo" + (x.empresa ? " · " + x.empresa : "") + ")" : ""}` : "—";
+export const etiquetaPersona = (x) => x ? `${x.nombre}${x.tipo === "externo" ? " (externo" + (x.empresa ? " · " + x.empresa : "") + ")" : x.puesto ? " · " + x.puesto : ""}` : "—";
 
 /* ---------- formato ---------- */
 export const fFecha = (d) => new Date(d).toLocaleString("es-MX", { timeZone: TZ, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
