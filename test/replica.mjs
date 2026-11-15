@@ -22,6 +22,7 @@ for (const f of [
   "supabase/migrations/0003_cerrar_funciones_auxiliares.sql",
   "supabase/migrations/0004_enums_seguridad_compras.sql",
   "supabase/migrations/0005_personal_externos_duplicados.sql",
+  "supabase/migrations/0006_gerente_administra_personal.sql",
   "supabase/seed/seed_demo.sql",
 ]) await db.exec(sql(f));
 

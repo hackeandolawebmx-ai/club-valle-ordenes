@@ -457,3 +457,5 @@ a.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text
 .dup-d{font-size:13.5px;color:var(--ink-2)}
 .reasigna .row{flex-wrap:nowrap} .reasigna select{flex:1;min-width:0}
 .aviso-rep .check{background:#fff} .aviso-rep .check.on{border-color:var(--oak);background:var(--v1955)} .aviso-rep .check input{accent-color:var(--oak)}
+.acciones-p{display:flex;gap:12px;margin-left:auto}
+.fila-btn{display:flex;gap:8px;flex-wrap:wrap}

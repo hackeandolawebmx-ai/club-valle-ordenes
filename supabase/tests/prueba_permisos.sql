@@ -92,6 +92,24 @@ select 'OK  baja de personal: activo=' || activo from public.activar_personal('1
 select pg_temp.debe_fallar($$select public.asignar_orden(1, '10000000-0000-0000-0000-000000000002')$$, 'asignar a personal dado de baja');
 select public.activar_personal('10000000-0000-0000-0000-000000000002', true) is not null as reactivado;
 
+-- 6b. Gerente administra personal de todas las áreas; supervisor solo la suya; no se da de baja con órdenes abiertas
+select pg_temp.debe_fallar($$select public.guardar_personal(null, 'Intruso', 'intendencia', 'interno')$$, 'sup mantenimiento da de alta en intendencia');
+select pg_temp.debe_fallar($$select public.guardar_personal('10000000-0000-0000-0000-000000000003', 'Int A', 'intendencia', 'interno')$$, 'sup mantenimiento edita personal de intendencia');
+select pg_temp.debe_fallar($$select public.activar_personal('10000000-0000-0000-0000-000000000004', false)$$, 'baja de personal con orden abierta');
+select pg_temp.como('5');
+select pg_temp.debe_fallar($$select public.guardar_personal(null, 'Intruso', 'mantenimiento', 'interno')$$, 'solicitante da de alta personal');
+select pg_temp.como('1');
+select 'OK  gerente da de alta en intendencia: ' || nombre || ' / ' || area from public.guardar_personal(null, '  Auxiliar nuevo ', 'intendencia', 'interno', null, 'Auxiliar', 'Gimnasio');
+select pg_temp.debe_fallar($$select public.guardar_personal(null, 'Sin area', null, 'interno')$$, 'gerente sin indicar área');
+select pg_temp.debe_fallar($$select public.guardar_personal(null, '   ', 'compras', 'interno')$$, 'nombre vacío');
+select 'OK  gerente edita: ' || nombre || ' / ' || coalesce(puesto, '') from public.guardar_personal('10000000-0000-0000-0000-000000000003', 'Int A editada', 'intendencia', 'interno', null, 'Jefa de turno', null);
+select pg_temp.debe_fallar($$select public.guardar_personal('10000000-0000-0000-0000-000000000004', 'Plomero ext', 'compras', 'externo', 'Plomería Regio')$$, 'mover de área con orden abierta');
+select 'OK  gerente mueve de área sin órdenes abiertas: ' || area from public.guardar_personal('10000000-0000-0000-0000-000000000005', 'Comprador', 'intendencia', 'interno');
+select 'OK  gerente da de baja: activo=' || activo from public.activar_personal('10000000-0000-0000-0000-000000000005', false);
+select public.activar_personal('10000000-0000-0000-0000-000000000005', true) is not null as reactivado_gerente;
+select public.guardar_personal('10000000-0000-0000-0000-000000000005', 'Comprador', 'compras', 'interno') is not null as regresa_a_compras;
+select pg_temp.como('2');
+
 -- 7. El supervisor lleva el estatus y es el único que cambia estatus
 select pg_temp.como('5');
 select pg_temp.debe_fallar($$select public.cambiar_estatus(1, 'en_proceso')$$, 'solicitante cambia estatus');

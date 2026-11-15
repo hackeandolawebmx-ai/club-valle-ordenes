@@ -33,7 +33,7 @@ export const DEMO_PASS = "Valle2026!";
 
 /* Lo que cada rol puede hacer, en palabras. Se muestra en "Más". */
 export const PUEDES = {
-  gerente: ["Ver el dashboard y todas las órdenes de todas las áreas", "Consultar el historial completo de cada orden", "Ver la estructura del equipo y los códigos QR por zona"],
+  gerente: ["Ver el dashboard y todas las órdenes de todas las áreas", "Consultar el historial completo de cada orden", "Administrar la estructura: dar de alta, editar y dar de baja al personal de cualquier área", "Ver los códigos QR por zona"],
   supervisor: ["Ver y gestionar las órdenes de tu área", "Asignar cada orden a tu personal, interno o externo", "Cambiar el estatus y cerrar cuando tu personal termina", "Reasignar una orden a otra área (por ejemplo, a Compras)", "Cerrar un reporte repetido señalando la orden original", "Administrar tu personal y levantar reportes"],
   solicitante: ["Reportar una falla en menos de un minuto", "Ver si ya hay un reporte abierto de la misma falla", "Dar seguimiento a tus reportes, con comentarios y fotos"],
 };
