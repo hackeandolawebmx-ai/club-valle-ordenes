@@ -5,7 +5,7 @@ const VID = process.env.VID_DIR || path.join(__dirname, "..", "video", "fotos");
 const O = process.env.SHOTS || path.join(__dirname, "shots2"); fs.mkdirSync(O, { recursive: true });
 (async () => {
   const br = await chromium.launch();
-  const ctx = async (w, h, user) => { const c = await br.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2 }); const p = await c.newPage(); await p.goto(URL); await p.waitForSelector(".demo"); await p.click(`button:has(span:text-is("${user}"))`); await p.waitForSelector(".nav"); await p.waitForTimeout(600); return [c, p]; };
+  const ctx = async (w, h, user) => { const c = await br.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2 }); const p = await c.newPage(); await p.goto(URL); await p.click('button.opcion:has-text("Soy del club")'); await p.waitForSelector(".demo"); await p.click(`button:has(span:text-is("${user}"))`); await p.waitForSelector(".nav"); await p.waitForTimeout(600); return [c, p]; };
   const foto = (n) => path.join(VID, n + ".jpg");
   let [c, p] = await ctx(390, 844, "Daniela Cantú");
   await p.click(".nav a.centro"); await p.waitForSelector("textarea");
@@ -17,8 +17,8 @@ const O = process.env.SHOTS || path.join(__dirname, "shots2"); fs.mkdirSync(O, {
   await p.click('button:text-is("Enviar reporte")'); await p.waitForSelector(".timeline");
   const folio = ((await p.textContent(".folio")) || "").trim(); await c.close();
   [c, p] = await ctx(390, 844, "Luis Treviño"); await p.fill('input[type=search]', folio); await p.click(".orden"); await p.waitForSelector(".card.verde");
-  await p.selectOption(".card.verde select", { label: "Jorge Castillo" }); await p.fill(".card.verde textarea", "Atender hoy, hay socios cerca."); await p.click('button:text-is("Asignar")'); await p.waitForSelector(".badge.b-asignada"); await c.close();
-  [c, p] = await ctx(390, 844, "Jorge Castillo"); await p.fill('input[type=search]', folio); await p.click(".orden"); await p.waitForSelector(".card.verde");
+  await p.selectOption(".card.verde select", { label: "Arturo Medina · Técnico plomero" }); await p.fill(".card.verde textarea", "Atender hoy, hay socios cerca."); await p.click('button:text-is("Asignar")'); await p.waitForSelector(".badge.b-asignada"); await c.close();
+  [c, p] = await ctx(390, 844, "Luis Treviño"); await p.fill('input[type=search]', folio); await p.click(".orden"); await p.waitForSelector(".card.verde");
   await p.click('button:text-is("Iniciar / reanudar")'); await p.waitForSelector(".badge.b-en_proceso"); await p.fill(".card.verde textarea", "Cambié el empaque y probé.");
   await p.setInputFiles('.card.verde input[type=file]', foto("foto_listo")); await p.waitForTimeout(1500);
   await p.click('button:text-is("Marcar resuelta")'); await p.waitForSelector(".badge.b-resuelta"); await p.waitForTimeout(600);

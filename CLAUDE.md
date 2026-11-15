@@ -33,7 +33,7 @@ Dueño: Daniel (iActiva). Escribir siempre en español, de tú, directo, sin emo
 
 ## Pruebas locales (sin red)
 - Réplica: `npm run build:local` genera `dist-local/` y `npm run replica` levanta `test/replica.mjs` en http://127.0.0.1:3000. Usa PGlite (Postgres en WebAssembly, sin instalar nada; corre en Windows) con las migraciones 0001, 0003, 0004, 0005 y 0006 y el seed reales, así que RLS y RPC son las de producción. Imita auth, REST y storage. Los datos viven en memoria: se reinician al reiniciar la réplica.
-- Punta a punta: `npm run test:e2e` con la réplica arriba (Playwright, ~40 comprobaciones; capturas en `test/shots/`). Grabación del video: `test/video.cjs` y `test/shots.cjs` (verificados con la interfaz nueva); las fotos `foto_fuga.jpg` y `foto_listo.jpg` no están en el repo: ponlas en `video/fotos` (o en `VID_DIR`). Salida en `video/salida`. El resto del pipeline de video (`video/*.py`) no se revisó.
+- Punta a punta: `npm run test:e2e` con la réplica arriba (Playwright, ~40 comprobaciones; capturas en `test/shots/`). Grabación del video: `test/video.cjs` y `test/shots.cjs` (actualizados a "Soy del club" y al flujo sin operativo); las fotos `foto_fuga.jpg` y `foto_listo.jpg` no están en el repo: ponlas en `video/fotos` (o en `VID_DIR`). Salida en `video/salida`. El resto del pipeline de video (`video/*.py`) no se revisó.
 - Permisos en Postgres: `supabase/tests/stub_supabase.sql` + migraciones + `supabase/tests/prueba_permisos.sql`.
 - Lo que no se puede probar contra la réplica: el login real de GoTrue y las políticas reales de storage (la 0002 no se carga); probar en la URL publicada.
 
@@ -47,4 +47,4 @@ Verde OAK #31674F, Verde 1955 #C7E3CB, Beige Sparkling #F5F1E5, verde menta de l
 Bot de WhatsApp, SLA automáticos, mantenimiento preventivo, inventario, pedidos con QR y pagos (dependen de integrarse con el sistema de cobranza del club).
 
 ## Pendientes
-Regrabar el video (muestra un operativo con sesión propia) y regenerar la voz. `test/video.cjs` y `test/shots.cjs` aún usan el login anterior y al operativo. Apagar `CFG.demo` antes del consejo. Reseed el lunes 16.
+Regenerar la voz (la narración cambia: ya no hay operativo con sesión; el supervisor asigna y lleva el estatus) y recomponer el video con `video/*.py`; `test/video.cjs` y `test/shots.cjs` ya están actualizados. Apagar `CFG.demo` antes del consejo. Reseed el lunes 16.

@@ -6,7 +6,7 @@ const caps = {}; let folio = "";
 (async () => {
   const br = await chromium.launch();
   const seg = async (n, { phone = true, user = null }, fn) => {
-    let state; if (user) { const c0 = await br.newContext({ viewport: { width: 390, height: 844 } }); const p0 = await c0.newPage(); await p0.goto(URL); await p0.waitForSelector('.demo'); await p0.click(`button:has(span:text-is("${user}"))`); await p0.waitForSelector('.nav'); await p0.waitForTimeout(500); state = await c0.storageState(); await c0.close(); }
+    let state; if (user) { const c0 = await br.newContext({ viewport: { width: 390, height: 844 } }); const p0 = await c0.newPage(); await p0.goto(URL); await p0.click('button.opcion:has-text("Soy del club")'); await p0.waitForSelector('.demo'); await p0.click(`button:has(span:text-is("${user}"))`); await p0.waitForSelector('.nav'); await p0.waitForTimeout(500); state = await c0.storageState(); await c0.close(); }
     const vp = phone ? { width: 585, height: 1266 } : { width: 1280, height: 720 };
     const sz = phone ? { width: 585, height: 1266 } : { width: 1280, height: 720 };
     const c = await br.newContext({ viewport: vp, recordVideo: { dir: OUT + "/raw" + n, size: sz }, acceptDownloads: false, ...(state ? { storageState: state } : {}) });
@@ -17,10 +17,10 @@ const caps = {}; let folio = "";
     await fn(p, cap, w); caps[n].push({ t: (Date.now() - t0) / 1000, text: null }); 
     const v = p.video(); await c.close(); fs.renameSync(await v.path(), `${OUT}/seg${n}.webm`);
   };
-  const entrar = async (p, nombre) => { await p.goto(URL); await p.waitForSelector(".demo"); };
-  // 1 solicitante
+    // 1 solicitante
   await seg(1, {}, async (p, cap, w) => {
-    await p.goto(URL); await p.waitForSelector(".demo"); cap("1. Quien detecta una falla\nla reporta desde su celular"); await w(2600);
+    await p.goto(URL); await p.waitForSelector("button.opcion"); cap("1. Quien detecta una falla\nla reporta desde su celular"); await w(2200);
+    await p.click('button.opcion:has-text("Soy del club")'); await p.waitForSelector(".demo"); await w(1200);
     await p.click('button:has(span:text-is("Daniela Cantú"))'); await p.waitForSelector(".nav"); await w(1800);
     await p.click(".nav a.centro"); await p.waitForSelector("textarea"); await w(900);
     cap("Elige la zona y el tipo de falla:\nse envía sola al área correcta");
@@ -43,27 +43,27 @@ const caps = {}; let folio = "";
     cap("2. El supervisor del área ve su bandeja\ncon lo urgente primero"); await w(2600);
     await p.click('.chip:has-text("Nuevas")'); await w(1500);
     await p.click(`.orden:has-text("${folio}")`); await p.waitForSelector(".card.verde"); await w(1500);
-    cap("Asigna la orden a un operativo\nde su misma área");
-    await p.selectOption(".card.verde select", { label: "Jorge Castillo" }); await w(1000);
+    cap("La asigna a su personal,\ninterno o externo");
+    await p.selectOption(".card.verde select", { label: "Arturo Medina · Técnico plomero" }); await w(1000);
     await p.type(".card.verde textarea", "Atender hoy, hay socios cerca.", { delay: 40 }); await w(600);
     await p.click('button:text-is("Asignar")'); await p.waitForSelector(".badge.b-asignada"); await w(1000);
     await p.evaluate(() => window.scrollTo({ top: 400, behavior: "smooth" })); await w(2600);
   });
-  // 3 operativo
-  await seg(3, { user: "Jorge Castillo" }, async (p, cap, w) => {
+  // 3 supervisor lleva el estatus según le reporta su personal
+  await seg(3, { user: "Luis Treviño" }, async (p, cap, w) => {
     await p.goto(URL); await p.waitForSelector(".orden");
-    cap("3. El operativo ve solo lo que le asignaron"); await w(2600);
+    cap("3. El personal no usa el sistema:\nel supervisor le da seguimiento"); await w(2400);
     await p.click(`.orden:has-text("${folio}")`); await p.waitForSelector(".card.verde"); await w(1200);
-    cap("Cambia el estatus y deja evidencia.\nNo puede cerrar la orden");
+    cap("Registra el avance que le reporta\nsu personal, con evidencia");
     await p.click('button:text-is("Iniciar / reanudar")'); await p.waitForSelector(".badge.b-en_proceso"); await w(1500);
-    await p.type(".card.verde textarea", "Cambié el empaque y probé.", { delay: 40 }); await w(500);
+    await p.type(".card.verde textarea", "Arturo cambió el empaque y probó.", { delay: 40 }); await w(500);
     await p.setInputFiles('.card.verde input[type=file]', OUT + "/foto_listo.jpg"); await w(2200);
     await p.click('button:text-is("Marcar resuelta")'); await p.waitForSelector(".badge.b-resuelta"); await w(2800);
   });
   // 4 supervisor cierra
   await seg(4, { user: "Luis Treviño" }, async (p, cap, w) => {
     await p.goto(URL); await p.waitForSelector(".orden");
-    cap("4. El supervisor revisa lo resuelto\ny es el único que cierra"); await w(1800);
+    cap("4. Cuando el trabajo está listo,\nel supervisor cierra la orden"); await w(1800);
     await p.click('.chip:has-text("Por cerrar")'); await w(1300);
     await p.click(`.orden:has-text("${folio}")`); await p.waitForSelector('button:text-is("Cerrar orden")'); await w(1500);
     await p.click('button:text-is("Cerrar orden")'); await p.waitForSelector(".badge.b-cerrada"); await w(1200);
