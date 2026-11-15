@@ -9,3 +9,4 @@ video/fotos
 video/salida
 slides/*.pptx
 slides/*.pdf
+supabase/seed/personal_real.sql

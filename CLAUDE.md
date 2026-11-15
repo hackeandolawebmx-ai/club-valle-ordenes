@@ -26,8 +26,9 @@ Dueño: Daniel (iActiva). Escribir siempre en español, de tú, directo, sin emo
 - La interfaz espeja las reglas, pero el servidor decide. Si cambias una regla, cambia la RLS/RPC y agrega prueba en `supabase/tests/prueba_permisos.sql` (`npm run test:permisos`).
 
 ## Datos de demo
-- `supabase/seed/seed_demo.sql` (re-ejecutable): 9 usuarios ficticios, 13 personas de personal, 14 zonas, 12 categorías, 54 órdenes con historial (una reasignada a Compras y dos reportes repetidos), fechas relativas a hoy. **Borra las órdenes existentes.** Correr de nuevo el lunes 16 antes de grabar o presentar.
-- Cuentas `@clubvalle-demo.test`, contraseña común `Valle2026!`: gerente, sup.mant, sup.mant2, sup.int, sup.compras, sol.ayb, sol.dep, sol.adm, sol.seg. Estructura tomada del listado real del club (nombres reales NO van en el repo). Los nombres son ficticios.
+- `supabase/seed/seed_demo.sql` (re-ejecutable): 9 usuarios ficticios, 14 zonas, 12 categorías, 54 órdenes con historial (una reasignada a Compras y dos reportes repetidos), fechas relativas a hoy. **Borra las órdenes existentes.** Correr de nuevo el lunes 16 antes de grabar o presentar.
+- Cuentas `@clubvalle-demo.test`, contraseña común `Valle2026!`: gerente, sup.mant, sup.mant2, sup.int, sup.compras, sol.ayb, sol.dep, sol.adm, sol.seg. Los usuarios (gerente, supervisores, solicitantes) son ficticios.
+- **Personal real:** desde el 14 nov la tabla `personal` de producción tiene las 27 personas reales del listado del club (mantenimiento 11, intendencia 16; Compras sin personal). Nombres reales NO van en el repo: el SQL de carga es local (`supabase/seed/personal_real.sql`, en .gitignore). El seed solo siembra personal ficticio si la tabla no tiene personal real, y reparte las órdenes entre el personal que haya por área y oficio. Réplica con personal real: `PERSONAL_SQL=<ruta> npm run replica`.
 - El login tiene botones de acceso rápido (`CFG.demo` en `public/config.js`). Para el consejo, ponerlo en `false` o proteger el sitio.
 - Verificado el 12 nov 2026 contra el Supabase real con el build nuevo: login, crear reporte y subir foto con URL firmada. Esa prueba dejó una orden de prueba (MAN-00053); el seed la borra.
 

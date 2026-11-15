@@ -75,6 +75,9 @@ delete from auth.users where id in (
   'a0000000-0000-4000-8000-000000000006', 'a0000000-0000-4000-8000-000000000007');
 
 -- Personal por área (internos y externos). Los gestiona el supervisor, sin acceso al sistema.
+-- Solo se siembra el personal ficticio si la tabla no tiene personal real (ids que no empiezan con a0000000-).
+do $p$ begin
+if not exists (select 1 from public.personal where id::text not like 'a0000000-%') then
 insert into public.personal (id, nombre, area, tipo, empresa, puesto, zona_asignada, activo) values
   ('a0000000-0000-4000-8000-000000000004', 'Jorge Castillo',   'mantenimiento', 'interno', null, 'Técnico electricista', null, true),
   ('a0000000-0000-4000-8000-000000000005', 'Arturo Medina',    'mantenimiento', 'interno', null, 'Técnico plomero', null, true),
@@ -91,6 +94,8 @@ insert into public.personal (id, nombre, area, tipo, empresa, puesto, zona_asign
   ('a0000000-0000-4000-8000-000000000022', 'Sandra Ochoa',     'compras',       'interno', null, 'Comprador', null, true)
 on conflict (id) do update set nombre = excluded.nombre, area = excluded.area, tipo = excluded.tipo,
   empresa = excluded.empresa, puesto = excluded.puesto, zona_asignada = excluded.zona_asignada, activo = true;
+end if;
+end $p$;
 
 do $$
 declare
@@ -134,8 +139,8 @@ declare
   g uuid := 'a0000000-0000-4000-8000-000000000001';
   sup_m uuid := 'a0000000-0000-4000-8000-000000000002';
   sup_i uuid := 'a0000000-0000-4000-8000-000000000003';
-  ops_m uuid[] := array['a0000000-0000-4000-8000-000000000004','a0000000-0000-4000-8000-000000000005','a0000000-0000-4000-8000-000000000023','a0000000-0000-4000-8000-000000000020']::uuid[];
-  ops_i uuid[] := array['a0000000-0000-4000-8000-000000000006','a0000000-0000-4000-8000-000000000007']::uuid[];
+  ops_m uuid[] := array(select id from public.personal where area = 'mantenimiento' and activo and tipo = 'interno' and puesto ~* 'cnico' order by nombre limit 4);
+  ops_i uuid[] := array(select id from public.personal where area = 'intendencia' and activo and tipo = 'interno' and puesto ~* 'limpieza' order by nombre limit 2);
   sols  uuid[] := array['a0000000-0000-4000-8000-000000000008','a0000000-0000-4000-8000-000000000009','a0000000-0000-4000-8000-000000000010','a0000000-0000-4000-8000-000000000012']::uuid[];
 
   i int; idx int; t jsonb;
@@ -166,7 +171,7 @@ begin
     select c.id, c.area into v_cat, v_area from public.categorias c where c.nombre = t->>1;
 
     v_sup := case v_area when 'mantenimiento' then sup_m else sup_i end;
-    v_op  := case v_area when 'mantenimiento' then ops_m[1 + i % 4] else ops_i[1 + i % 2] end;
+    v_op  := case v_area when 'mantenimiento' then ops_m[1 + i % cardinality(ops_m)] else ops_i[1 + i % cardinality(ops_i)] end;
     v_rep := case when i % 9 = 0 then (case v_area when 'mantenimiento' then sup_i else sup_m end)
                   else sols[1 + i % 4] end;
 
@@ -240,24 +245,19 @@ do $$
 declare
   sup_m uuid := 'a0000000-0000-4000-8000-000000000002';
   sup_c uuid := 'a0000000-0000-4000-8000-000000000011';
-  comprador uuid := 'a0000000-0000-4000-8000-000000000022';
   sol_dep uuid := 'a0000000-0000-4000-8000-000000000009';
   sol_seg uuid := 'a0000000-0000-4000-8000-000000000012';
   base public.ordenes;
   d1 bigint; d2 bigint; v_folio text;
 begin
-  -- Orden 17 (en espera por refacción): pasa a Compras, que la atiende.
+  -- Orden 17 (en espera por refacción): pasa a Compras, que aún no la toma.
   update public.ordenes
-     set area = 'compras', estatus = 'en_proceso', asignado_a = comprador,
+     set area = 'compras', estatus = 'nueva', asignado_a = null,
          updated_at = now() - interval '3 hours'
    where id = 17;
   insert into public.orden_eventos (orden_id, autor_id, tipo, estatus_anterior, estatus_nuevo, area_anterior, area_nueva, comentario, created_at)
   values (17, sup_m, 'reasignacion', 'en_espera', 'nueva', 'mantenimiento', 'compras',
           'Se requiere comprar el compresor; pasa a Compras.', now() - interval '6 hours');
-  insert into public.orden_eventos (orden_id, autor_id, tipo, estatus_anterior, estatus_nuevo, asignado_a, comentario, created_at)
-  values (17, sup_c, 'asignada', 'nueva', 'asignada', comprador, 'Pedir cotización a dos proveedores.', now() - interval '5 hours');
-  insert into public.orden_eventos (orden_id, autor_id, tipo, estatus_anterior, estatus_nuevo, comentario, created_at)
-  values (17, sup_c, 'cambio_estatus', 'asignada', 'en_proceso', 'Cotizaciones solicitadas.', now() - interval '3 hours');
 
   -- Reporte repetido de la orden 28 (en proceso): uno ya cerrado como duplicado y otro todavía abierto.
   select * into base from public.ordenes where id = 28;
