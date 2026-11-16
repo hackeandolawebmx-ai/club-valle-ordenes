@@ -37,10 +37,11 @@ begin
             'email', u.id::text, now(), now(), now())
     on conflict (provider_id, provider) do nothing;
 
+    -- Si el perfil ya existe se respeta su nombre (en producción llevan los nombres reales del club).
     insert into public.perfiles (id, nombre, rol, area, departamento, activo)
     values (u.id, u.nombre, u.rol, u.area, u.departamento, true)
     on conflict (id) do update
-      set nombre = excluded.nombre, rol = excluded.rol, area = excluded.area,
+      set rol = excluded.rol, area = excluded.area,
           departamento = excluded.departamento, activo = true;
   end loop;
 end $$;

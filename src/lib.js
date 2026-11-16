@@ -20,14 +20,14 @@ export const ROL = { gerente: "Gerente", supervisor: "Supervisor", operativo: "O
 export const ACCION = { en_proceso: "Iniciar / reanudar", en_espera: "Poner en espera", resuelta: "Marcar resuelta" };
 
 export const DEMO = [
-  ["gerente@clubvalle-demo.test", "Gerente", "Roberto Salinas"],
-  ["sup.mant@clubvalle-demo.test", "Supervisor mantenimiento", "Luis Treviño"],
-  ["sup.int@clubvalle-demo.test", "Supervisor intendencia", "Marisol Garza"],
-  ["sup.compras@clubvalle-demo.test", "Supervisor compras", "Héctor Ibarra"],
-  ["sol.ayb@clubvalle-demo.test", "Alimentos y bebidas", "Daniela Cantú"],
-  ["sol.dep@clubvalle-demo.test", "Deportes", "Mauricio Leal"],
-  ["sol.adm@clubvalle-demo.test", "Administración", "Karla Benavides"],
-  ["sol.seg@clubvalle-demo.test", "Seguridad", "Sergio Lozano"],
+  ["gerente@clubvalle-demo.test", "Gerente"],
+  ["sup.mant@clubvalle-demo.test", "Supervisor mantenimiento"],
+  ["sup.int@clubvalle-demo.test", "Supervisor intendencia"],
+  ["sup.compras@clubvalle-demo.test", "Supervisor compras"],
+  ["sol.ayb@clubvalle-demo.test", "Alimentos y bebidas"],
+  ["sol.dep@clubvalle-demo.test", "Deportes"],
+  ["sol.adm@clubvalle-demo.test", "Administración"],
+  ["sol.seg@clubvalle-demo.test", "Seguridad"],
 ];
 export const DEMO_PASS = "Valle2026!";
 

@@ -60,7 +60,7 @@ export function Login({ onError }) {
       </form>
       ${CFG.demo && html`<div class="demo-caja stack">
         <div class="separador"><span>Acceso rápido de demostración</span></div>
-        <div class="demo">${DEMO.map(([e, rol, nombre]) => html`<button type="button" disabled=${!!cargando} class=${cargando === e ? "on" : ""} onClick=${() => entrar(e, DEMO_PASS)}><${Avatar} nombre=${nombre} /><b>${rol}</b><span>${nombre}</span></button>`)}</div>
+        <div class="demo">${DEMO.map(([e, rol]) => html`<button type="button" disabled=${!!cargando} class=${cargando === e ? "on" : ""} onClick=${() => entrar(e, DEMO_PASS)}><${Avatar} nombre=${rol} /><b>${rol}</b></button>`)}</div>
         <div class="small muted">Usuarios y datos ficticios para la demostración.</div>
       </div>`}
       </div>`}

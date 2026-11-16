@@ -1,6 +1,7 @@
 const { chromium } = require("playwright");
 const fs = require("fs");
 const OUT = process.env.SHOTS || require("path").join(__dirname, "shots"); fs.mkdirSync(OUT, { recursive: true });
+const ROL = {"Roberto Salinas": "Gerente", "Luis Treviño": "Supervisor mantenimiento", "Marisol Garza": "Supervisor intendencia", "Héctor Ibarra": "Supervisor compras", "Daniela Cantú": "Alimentos y bebidas", "Mauricio Leal": "Deportes", "Karla Benavides": "Administración", "Sergio Lozano": "Seguridad"}; // los botones de acceso rápido muestran el rol, no el nombre
 const URL = process.env.APP_URL || "http://127.0.0.1:3000/";
 const log = []; const ok = (c, m) => { log.push((c ? "OK   " : "FALLA ") + m); if (!c) process.exitCode = 1; };
 (async () => {
@@ -8,7 +9,7 @@ const log = []; const ok = (c, m) => { log.push((c ? "OK   " : "FALLA ") + m); i
   const mk = async (w = 390, h = 844) => { const c = await br.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1 }); const p = await c.newPage(); p.on("pageerror", (e) => log.push("PAGEERROR " + e.message)); p.on("console", (m) => { if (m.type() === "error" && !/fonts|ERR_(NAME|INTERNET|CONNECTION|FAILED)/.test(m.text())) log.push("CONSOLE " + m.text()); }); return p; };
   // El personal operativo ya no inicia sesión; el acceso de club pasa por "Soy del club".
   const interno = async (p) => { await p.goto(URL); await p.click('button.opcion:has-text("Soy del club")'); await p.waitForSelector(".demo"); };
-  const entrar = async (p, nombre) => { await interno(p); await p.click(`button:has(span:text-is("${nombre}"))`); await p.waitForSelector(".nav", { timeout: 8000 }); };
+  const entrar = async (p, nombre) => { await interno(p); await p.click(`button:has(b:text-is("${ROL[nombre]}"))`); await p.waitForSelector(".nav", { timeout: 8000 }); };
   const abrir = async (p, folio) => { await p.fill('input[type=search]', folio); await p.waitForSelector(".orden"); await p.click(".orden"); await p.waitForSelector(".kv"); };
   const img = Buffer.from("/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/wAALCAABAAEBAREA/8QAFAABAAAAAAAAAAAAAAAAAAAACv/EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AKp//2Q==", "base64");
 
@@ -161,7 +162,7 @@ const log = []; const ok = (c, m) => { log.push((c ? "OK   " : "FALLA ") + m); i
 
   // --- QR: abre el formulario con zona prellenada
   p = await mk(); const tok = (await (await fetch(URL + "__prueba/qr?zona=Gimnasio")).json()).qr_token;
-  await p.goto(URL + "?zona=" + tok); await p.click('button.opcion:has-text("Soy del club")'); await p.click('button:has(span:text-is("Mauricio Leal"))'); await p.waitForSelector("textarea");
+  await p.goto(URL + "?zona=" + tok); await p.click('button.opcion:has-text("Soy del club")'); await p.click('button:has(b:text-is("Deportes"))'); await p.waitForSelector("textarea");
   ok((await p.inputValue("select >> nth=0")) !== "", "QR prellena la zona");
   await p.screenshot({ path: OUT + "/18-qr-prefill.png" });
   await br.close();

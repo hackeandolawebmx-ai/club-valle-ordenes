@@ -1,12 +1,13 @@
 // Graba los segmentos de la demo contra la réplica local. Salida: $VID_DIR/segN.webm y caps.json (por defecto video/salida). Fotos: $VID_DIR/foto_fuga.jpg y foto_listo.jpg
 const { chromium } = require("playwright"); const fs = require("fs");
 const URL = process.env.APP_URL || "http://127.0.0.1:3000/"; const OUT = process.env.VID_DIR || require("path").join(__dirname, "..", "video", "salida"); fs.mkdirSync(OUT, { recursive: true });
+const ROL = {"Roberto Salinas": "Gerente", "Luis Treviño": "Supervisor mantenimiento", "Marisol Garza": "Supervisor intendencia", "Héctor Ibarra": "Supervisor compras", "Daniela Cantú": "Alimentos y bebidas", "Mauricio Leal": "Deportes", "Karla Benavides": "Administración", "Sergio Lozano": "Seguridad"}; // los botones de acceso rápido muestran el rol, no el nombre
 const RIPPLE = `document.addEventListener('pointerdown',e=>{const d=document.createElement('div');d.style.cssText='position:fixed;z-index:99999;pointer-events:none;width:46px;height:46px;border-radius:50%;background:rgba(95,168,128,.55);border:3px solid #31674F;left:'+(e.clientX-23)+'px;top:'+(e.clientY-23)+'px;transition:all .55s ease-out';document.body.appendChild(d);requestAnimationFrame(()=>{d.style.transform='scale(1.9)';d.style.opacity='0'});setTimeout(()=>d.remove(),700)},true);`;
 const caps = {}; let folio = "";
 (async () => {
   const br = await chromium.launch();
   const seg = async (n, { phone = true, user = null }, fn) => {
-    let state; if (user) { const c0 = await br.newContext({ viewport: { width: 390, height: 844 } }); const p0 = await c0.newPage(); await p0.goto(URL); await p0.click('button.opcion:has-text("Soy del club")'); await p0.waitForSelector('.demo'); await p0.click(`button:has(span:text-is("${user}"))`); await p0.waitForSelector('.nav'); await p0.waitForTimeout(500); state = await c0.storageState(); await c0.close(); }
+    let state; if (user) { const c0 = await br.newContext({ viewport: { width: 390, height: 844 } }); const p0 = await c0.newPage(); await p0.goto(URL); await p0.click('button.opcion:has-text("Soy del club")'); await p0.waitForSelector('.demo'); await p0.click(`button:has(b:text-is("${ROL[user]}"))`); await p0.waitForSelector('.nav'); await p0.waitForTimeout(500); state = await c0.storageState(); await c0.close(); }
     const vp = phone ? { width: 585, height: 1266 } : { width: 1280, height: 720 };
     const sz = phone ? { width: 585, height: 1266 } : { width: 1280, height: 720 };
     const c = await br.newContext({ viewport: vp, recordVideo: { dir: OUT + "/raw" + n, size: sz }, acceptDownloads: false, ...(state ? { storageState: state } : {}) });
@@ -21,7 +22,7 @@ const caps = {}; let folio = "";
   await seg(1, {}, async (p, cap, w) => {
     await p.goto(URL); await p.waitForSelector("button.opcion"); cap("1. Quien detecta una falla\nla reporta desde su celular"); await w(2200);
     await p.click('button.opcion:has-text("Soy del club")'); await p.waitForSelector(".demo"); await w(1200);
-    await p.click('button:has(span:text-is("Daniela Cantú"))'); await p.waitForSelector(".nav"); await w(1800);
+    await p.click('button:has(b:text-is("Alimentos y bebidas"))'); await p.waitForSelector(".nav"); await w(1800);
     await p.click(".nav a.centro"); await p.waitForSelector("textarea"); await w(900);
     cap("Elige la zona y el tipo de falla:\nse envía sola al área correcta");
     await p.selectOption("select >> nth=0", { label: "Alberca" }); await w(900);
