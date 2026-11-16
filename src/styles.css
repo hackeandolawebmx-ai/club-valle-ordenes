@@ -432,7 +432,7 @@ a.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text
 .org-nodo small{text-transform:uppercase;letter-spacing:.08em;font-size:11px;opacity:.8} .org-nodo b{font-family:var(--serif);font-weight:400;font-size:18px}
 .org-nodo .muted{color:rgba(255,255,255,.75);font-size:12.5px}
 .org-linea{width:2px;height:20px;background:var(--line-2);margin:0 auto}
-.org-areas{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));align-items:start}
+.org-areas{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));align-items:start}
 .org-area{display:flex;flex-direction:column;gap:10px} .org-area.mia{border-color:var(--menta);box-shadow:0 0 0 2px var(--v1955)}
 .org-area header{display:flex;flex-direction:column;gap:2px}
 .org-sup{display:flex;flex-direction:column;gap:4px;padding:10px 12px;background:var(--hundido);border-radius:var(--r-s)}
@@ -441,7 +441,7 @@ a.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text
 .personas{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .persona{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .persona.baja{opacity:.55}
-.persona-n{display:flex;flex-direction:column;flex:1;min-width:0;line-height:1.2} .persona-n small{color:var(--muted);font-size:12px}
+.persona-n{display:flex;flex-direction:column;flex:1 1 150px;min-width:150px;line-height:1.2} .persona-n small{color:var(--muted);font-size:12px}
 .nuevo-personal{border-top:1px solid var(--line);padding-top:12px}
 .sec-tit{margin:6px 0 12px}
 .deptos{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-bottom:18px}
@@ -457,5 +457,6 @@ a.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;text
 .dup-d{font-size:13.5px;color:var(--ink-2)}
 .reasigna .row{flex-wrap:nowrap} .reasigna select{flex:1;min-width:0}
 .aviso-rep .check{background:#fff} .aviso-rep .check.on{border-color:var(--oak);background:var(--v1955)} .aviso-rep .check input{accent-color:var(--oak)}
-.acciones-p{display:flex;gap:12px;margin-left:auto}
+.acciones-p{display:flex;gap:12px;margin-left:auto;flex:none}
+.persona .tag{flex:none}
 .fila-btn{display:flex;gap:8px;flex-wrap:wrap}

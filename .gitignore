@@ -10,3 +10,4 @@ video/salida
 slides/*.pptx
 slides/*.pdf
 supabase/seed/personal_real.sql
+supabase/seed/perfiles_real.sql

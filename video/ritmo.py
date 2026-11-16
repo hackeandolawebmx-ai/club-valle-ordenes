@@ -4,7 +4,7 @@ import json, subprocess, re, os
 V = os.environ.get("VID_DIR", "/tmp/vid")
 T = json.load(open("timeline.json"))["sent"]
 vo = lambda i: T[i]["end"] - T[i]["start"]
-ANCH = {"1": [0.0, 5.8, 12.2, 17.4], "2": [0.0, 6.0], "3": [0.0, 5.0, "end-2.5"], "4": [0.0, 5.5], "5": [0.0, "end-3.9"]}
+ANCH = {"1": [0.0, 7.0], "2": [0.0], "3": [0.0], "4": [0.0, 7.0], "5": [0.0, 18.5]}
 GAP, TAIL, KEEP, MAXV = 0.35, 0.8, 0.25, 2.5
 def dur(f): return float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", f]).decode())
 def freezes(f):

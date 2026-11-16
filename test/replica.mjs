@@ -27,6 +27,8 @@ for (const f of [
   "supabase/seed/seed_demo.sql",
 ]) await db.exec(f.startsWith("/") ? fs.readFileSync(f, "utf8") : sql(f));
 
+if (process.env.POST_SQL) await db.exec(fs.readFileSync(process.env.POST_SQL, "utf8")); // opcional: nombres reales de perfiles (archivo local, fuera del repo)
+
 const fotos = new Map();
 const ID = /^[a-z_][a-z0-9_]*$/;
 const b64 = (o) => Buffer.from(JSON.stringify(o)).toString("base64url");

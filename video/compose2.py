@@ -51,8 +51,7 @@ for n in '12345':
     src=f'{V}/seg{n}_t.mp4' if os.path.exists(f'{V}/seg{n}_t.mp4') else f'{V}/seg{n}.webm'; nat=dur(src); caps=[c['t'] for c in CAPS[n] if c['text']]
     ids=idx[n]; phone=n!='5'
     # inicio de cada oración dentro del segmento
-    anchors={'1':[0.3,5.8,12.2,17.4],'2':[0.5,6.0],'3':[0.5,5.0,None],'4':[0.5,5.5],'5':[0.5,None]}[n]
-    if n=='5': anchors=[0.5,nat-3.9]
+    anchors={'1':[0.3,7.0],'2':[0.5],'3':[0.5],'4':[0.5,7.0],'5':[0.5,18.5]}[n]
     if os.path.exists('anchors.json') and src.endswith('_t.mp4'): anchors=json.load(open('anchors.json'))[n]
     local=[]; prev_end=-1
     for k,i in enumerate(ids):

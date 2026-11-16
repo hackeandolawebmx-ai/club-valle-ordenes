@@ -1,0 +1,65 @@
+{
+ "dur": 33.44,
+ "sent": [
+  {
+   "text": "Así funciona la herramienta de órdenes de servicio de Club Valle.",
+   "group": "intro",
+   "start": 0.21,
+   "end": 3.54
+  },
+  {
+   "text": "Quien detecta una falla la reporta desde su celular.",
+   "group": "1",
+   "start": 3.7,
+   "end": 6.18
+  },
+  {
+   "text": "Elige la zona y el tipo, y llega sola al área correcta.",
+   "group": "1",
+   "start": 6.34,
+   "end": 10.25
+  },
+  {
+   "text": "El supervisor la asigna a su personal, interno o externo.",
+   "group": "2",
+   "start": 10.41,
+   "end": 13.41
+  },
+  {
+   "text": "Registra el avance que le reporta su gente, con foto de evidencia.",
+   "group": "3",
+   "start": 13.57,
+   "end": 17.21
+  },
+  {
+   "text": "Y cuando el trabajo está listo, la cierra.",
+   "group": "4",
+   "start": 17.37,
+   "end": 20.14
+  },
+  {
+   "text": "Cada cambio queda en el historial: quién, qué y cuándo.",
+   "group": "4",
+   "start": 20.3,
+   "end": 22.33
+  },
+  {
+   "text": "El gerente ve todo en un tablero y administra a su personal.",
+   "group": "5",
+   "start": 22.49,
+   "end": 26.69
+  },
+  {
+   "text": "Y con un QR por zona, reportar es escanear y listo.",
+   "group": "5",
+   "start": 26.85,
+   "end": 30.49
+  },
+  {
+   "text": "Reportar, asignar, atender y medir, en una sola herramienta.",
+   "group": "fin",
+   "start": 30.65,
+   "end": 33.01
+  }
+ ]
+}
