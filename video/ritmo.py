@@ -5,7 +5,7 @@ V = os.environ.get("VID_DIR", "/tmp/vid")
 T = json.load(open("timeline.json"))["sent"]
 vo = lambda i: T[i]["end"] - T[i]["start"]
 ANCH = {"1": [0.0, 7.0], "2": [0.0], "3": [0.0], "4": [0.0, 7.0], "5": [0.0, 18.5]}
-GAP, TAIL, KEEP, MAXV = 0.35, 0.8, 0.25, 2.5
+GAP, TAIL, KEEP, MAXV = 0.5, 1.2, 0.9, 1.1
 def dur(f): return float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", f]).decode())
 def freezes(f):
     o = subprocess.run(["ffmpeg", "-hide_banner", "-i", f, "-vf", "freezedetect=n=0.003:d=0.5", "-f", "null", "-"], capture_output=True, text=True).stderr
