@@ -23,7 +23,7 @@ const log = []; const ok = (c, m) => { log.push((c ? "OK   " : "FALLA ") + m); i
   ok(/^https:\/\/wa\.me\/\?text=/.test(href) && decodeURIComponent(href).includes("soy socio del Club Valle"), "socio: mensaje prescrito por WhatsApp (" + href.slice(0, 40) + "…)");
   await p.screenshot({ path: OUT + "/01b-socio-whatsapp.png" });
   await p.click('button:has-text("Volver")'); await p.click('button.opcion:has-text("Soy del club")'); await p.waitForSelector(".demo");
-  ok((await p.locator(".demo button").count()) === 8 && (await p.locator('.demo button:has-text("Jorge Castillo")').count()) === 0, "demo: 8 cuentas y ningún operativo");
+  ok((await p.locator(".demo button").count()) === 9 && (await p.locator('.demo button:has-text("Jorge Castillo")').count()) === 0, "demo: 9 cuentas y ningún operativo");
   await p.screenshot({ path: OUT + "/01c-login-interno.png" });
   await p.context().close();
 
