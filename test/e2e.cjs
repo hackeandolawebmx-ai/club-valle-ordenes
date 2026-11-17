@@ -1,7 +1,7 @@
 const { chromium } = require("playwright");
 const fs = require("fs");
 const OUT = process.env.SHOTS || require("path").join(__dirname, "shots"); fs.mkdirSync(OUT, { recursive: true });
-const ROL = {"Roberto Salinas": "Gerente", "Luis Treviño": "Supervisor mantenimiento", "Marisol Garza": "Supervisor intendencia", "Héctor Ibarra": "Supervisor compras", "Daniela Cantú": "Alimentos y bebidas", "Mauricio Leal": "Deportes", "Karla Benavides": "Administración", "Sergio Lozano": "Seguridad"}; // los botones de acceso rápido muestran el rol, no el nombre
+const ROL = {"Roberto Salinas": "Gerente", "Luis Treviño": "Supervisor mantenimiento", "Marisol Garza": "Supervisor intendencia", "Héctor Ibarra": "Supervisor compras", "Daniela Cantú": "Alimentos y bebidas", "Mauricio Leal": "Deportes", "Karla Benavides": "Administración", "Sergio Lozano": "Seguridad", "Laura Mendoza": "Atención a socios"}; // los botones de acceso rápido muestran el rol, no el nombre
 const URL = process.env.APP_URL || "http://127.0.0.1:3000/";
 const log = []; const ok = (c, m) => { log.push((c ? "OK   " : "FALLA ") + m); if (!c) process.exitCode = 1; };
 (async () => {
@@ -133,7 +133,7 @@ const log = []; const ok = (c, m) => { log.push((c ? "OK   " : "FALLA ") + m); i
   await p.goto(URL + "#/ordenes"); await p.waitForSelector(".orden"); await p.click(".orden"); await p.waitForSelector(".kv");
   ok((await p.locator(".card.verde").count()) === 0, "gerente sin acciones en detalle");
   await p.goto(URL + "#/equipo"); await p.waitForSelector(".org-area");
-  ok((await p.locator(".org-area").count()) === 3 && (await p.locator(".depto").count()) === 4 && (await p.locator('.depto:has-text("Seguridad")').count()) === 1, "organigrama: 3 áreas y 4 departamentos (incluye Seguridad)");
+  ok((await p.locator(".org-area").count()) === 3 && (await p.locator(".depto").count()) === 5 && (await p.locator('.depto:has-text("Seguridad")').count()) === 1 && (await p.locator('.depto:has-text("Atención a socios")').count()) === 1, "organigrama: 3 áreas y 5 departamentos (incluye Seguridad y Atención a socios)");
   const intend = '.org-area:has(h3:text-is("Intendencia"))';
   await p.selectOption("#e-area", "intendencia"); await p.fill("#e-nom", "Auxiliar de prueba"); await p.fill("#e-pue", "Auxiliar");
   await p.click('.nuevo-personal button:text-is("Agregar")'); await p.waitForSelector(intend + ' .persona:has-text("Auxiliar de prueba")');
@@ -158,6 +158,11 @@ const log = []; const ok = (c, m) => { log.push((c ? "OK   " : "FALLA ") + m); i
   // --- Seguridad reporta
   p = await mk(); await entrar(p, "Sergio Lozano"); await p.waitForSelector(".orden");
   ok((await p.locator(".orden").count()) >= 1, "Seguridad es un departamento que reporta (ve sus reportes)");
+  await p.context().close();
+
+  // --- Atención a socios reporta
+  p = await mk(); await entrar(p, "Laura Mendoza"); await p.waitForSelector(".nav");
+  ok((await p.locator(".nav a.centro").count()) === 1, "Atención a socios es un departamento que reporta (tiene Reportar)");
   await p.context().close();
 
   // --- QR: abre el formulario con zona prellenada

@@ -10,7 +10,8 @@ insert into auth.users (id) values
  ('00000000-0000-0000-0000-000000000004'), -- supervisor compras
  ('00000000-0000-0000-0000-000000000005'), -- solicitante A&B
  ('00000000-0000-0000-0000-000000000006'), -- solicitante deportes
- ('00000000-0000-0000-0000-000000000007'); -- solicitante seguridad
+ ('00000000-0000-0000-0000-000000000007'), -- solicitante seguridad
+ ('00000000-0000-0000-0000-000000000008'); -- solicitante atención a socios
 
 insert into public.perfiles (id, nombre, rol, area, departamento) values
  ('00000000-0000-0000-0000-000000000001', 'Gerente',      'gerente',     null, null),
@@ -19,7 +20,8 @@ insert into public.perfiles (id, nombre, rol, area, departamento) values
  ('00000000-0000-0000-0000-000000000004', 'Sup Compras',  'supervisor',  'compras', null),
  ('00000000-0000-0000-0000-000000000005', 'Sol AyB',      'solicitante', null, 'alimentos_bebidas'),
  ('00000000-0000-0000-0000-000000000006', 'Sol Deportes', 'solicitante', null, 'deportes'),
- ('00000000-0000-0000-0000-000000000007', 'Sol Seguridad','solicitante', null, 'seguridad');
+ ('00000000-0000-0000-0000-000000000007', 'Sol Seguridad','solicitante', null, 'seguridad'),
+ ('00000000-0000-0000-0000-000000000008', 'Sol Socios',   'solicitante', null, 'atencion_socios');
 
 insert into public.personal (id, nombre, area, tipo, empresa) values
  ('10000000-0000-0000-0000-000000000001', 'Mant A',        'mantenimiento', 'interno', null),
@@ -183,6 +185,13 @@ select pg_temp.como('5');
 insert into public.orden_fotos (orden_id, storage_path) values (1, '1/fuga.jpg');
 select 'OK  foto registrada por el solicitante';
 select pg_temp.debe_fallar($$insert into public.orden_fotos (orden_id, storage_path) values (1, '2/truco.jpg')$$, 'foto con ruta de otra orden');
+
+-- 10b. Atención a socios reporta y solo ve lo suyo (al final para no mover folios)
+reset role;
+set role authenticated;
+select pg_temp.como('8');
+select 'OK  atención a socios reporta: ' || folio || ' ' || departamento_solicitante from public.crear_orden(1, 1, 'Socio reporta locker que no cierra');
+select 'OK  atención a socios ve ' || count(*) || ' orden (esperado 1)' from public.ordenes;
 
 -- 11. Anónimo no ve nada
 reset role;

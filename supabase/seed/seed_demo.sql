@@ -19,7 +19,8 @@ begin
       ('a0000000-0000-4000-8000-000000000010'::uuid, 'sol.adm@clubvalle-demo.test',  'Karla Benavides',   'solicitante'::public.rol_usuario, null::public.area_servicio,     'administracion'::public.departamento),
       ('a0000000-0000-4000-8000-000000000011'::uuid, 'sup.compras@clubvalle-demo.test', 'Héctor Ibarra',  'supervisor'::public.rol_usuario,  'compras'::public.area_servicio,       null::public.departamento),
       ('a0000000-0000-4000-8000-000000000013'::uuid, 'sup.mant2@clubvalle-demo.test', 'Héctor Barrera', 'supervisor'::public.rol_usuario, 'mantenimiento'::public.area_servicio, null::public.departamento),
-      ('a0000000-0000-4000-8000-000000000012'::uuid, 'sol.seg@clubvalle-demo.test',  'Sergio Lozano',     'solicitante'::public.rol_usuario, null::public.area_servicio,     'seguridad'::public.departamento)
+      ('a0000000-0000-4000-8000-000000000012'::uuid, 'sol.seg@clubvalle-demo.test',  'Sergio Lozano',     'solicitante'::public.rol_usuario, null::public.area_servicio,     'seguridad'::public.departamento),
+      ('a0000000-0000-4000-8000-000000000014'::uuid, 'sol.socios@clubvalle-demo.test', 'Laura Mendoza',    'solicitante'::public.rol_usuario, null::public.area_servicio,     'atencion_socios'::public.departamento)
     ) as t(id, email, nombre, rol, area, departamento)
   loop
     insert into auth.users (instance_id, id, aud, role, email, encrypted_password, email_confirmed_at,

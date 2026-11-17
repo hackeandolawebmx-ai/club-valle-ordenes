@@ -14,8 +14,8 @@ export const PRI_ORDEN = { urgente: 0, alta: 1, media: 2, baja: 3 };
 export const PRI_AYUDA = { urgente: "Atender de inmediato", alta: "Atender hoy", media: "Esta semana", baja: "Cuando haya espacio" };
 export const AREA = { mantenimiento: "Mantenimiento", intendencia: "Intendencia", compras: "Compras" };
 export const AREAS = ["mantenimiento", "intendencia", "compras"];
-export const DEPTO = { alimentos_bebidas: "Alimentos y bebidas", deportes: "Deportes", administracion: "Administración", seguridad: "Seguridad" };
-export const DEPTOS = ["alimentos_bebidas", "deportes", "administracion", "seguridad"];
+export const DEPTO = { alimentos_bebidas: "Alimentos y bebidas", deportes: "Deportes", administracion: "Administración", seguridad: "Seguridad", atencion_socios: "Atención a socios" };
+export const DEPTOS = ["alimentos_bebidas", "deportes", "administracion", "seguridad", "atencion_socios"];
 export const ROL = { gerente: "Gerente", supervisor: "Supervisor", operativo: "Operativo", solicitante: "Solicitante" };
 export const ACCION = { en_proceso: "Iniciar / reanudar", en_espera: "Poner en espera", resuelta: "Marcar resuelta" };
 
@@ -28,6 +28,7 @@ export const DEMO = [
   ["sol.dep@clubvalle-demo.test", "Deportes"],
   ["sol.adm@clubvalle-demo.test", "Administración"],
   ["sol.seg@clubvalle-demo.test", "Seguridad"],
+  ["sol.socios@clubvalle-demo.test", "Atención a socios"],
 ];
 export const DEMO_PASS = "Valle2026!";
 

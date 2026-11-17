@@ -1,6 +1,6 @@
 const { chromium } = require("playwright");
 const path = require("path"), fs = require("fs");
-const ROL = {"Roberto Salinas": "Gerente", "Luis Treviño": "Supervisor mantenimiento", "Marisol Garza": "Supervisor intendencia", "Héctor Ibarra": "Supervisor compras", "Daniela Cantú": "Alimentos y bebidas", "Mauricio Leal": "Deportes", "Karla Benavides": "Administración", "Sergio Lozano": "Seguridad"}; // los botones de acceso rápido muestran el rol, no el nombre
+const ROL = {"Roberto Salinas": "Gerente", "Luis Treviño": "Supervisor mantenimiento", "Marisol Garza": "Supervisor intendencia", "Héctor Ibarra": "Supervisor compras", "Daniela Cantú": "Alimentos y bebidas", "Mauricio Leal": "Deportes", "Karla Benavides": "Administración", "Sergio Lozano": "Seguridad", "Laura Mendoza": "Atención a socios"}; // los botones de acceso rápido muestran el rol, no el nombre
 const URL = process.env.APP_URL || "http://127.0.0.1:3000/";
 const VID = process.env.VID_DIR || path.join(__dirname, "..", "video", "fotos"); // foto_fuga.jpg y foto_listo.jpg
 const O = process.env.SHOTS || path.join(__dirname, "shots2"); fs.mkdirSync(O, { recursive: true });

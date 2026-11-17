@@ -23,6 +23,7 @@ for (const f of [
   "supabase/migrations/0004_enums_seguridad_compras.sql",
   "supabase/migrations/0005_personal_externos_duplicados.sql",
   "supabase/migrations/0006_gerente_administra_personal.sql",
+  "supabase/migrations/0007_departamento_atencion_socios.sql",
   ...(process.env.PERSONAL_SQL ? [process.env.PERSONAL_SQL] : []), // opcional: personal real (archivo local, fuera del repo)
   "supabase/seed/seed_demo.sql",
 ]) await db.exec(f.startsWith("/") ? fs.readFileSync(f, "utf8") : sql(f));

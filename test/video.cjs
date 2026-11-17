@@ -1,7 +1,7 @@
 // Graba los segmentos de la demo contra la réplica local. Salida: $VID_DIR/segN.webm y caps.json (por defecto video/salida). Fotos: $VID_DIR/foto_fuga.jpg y foto_listo.jpg
 const { chromium } = require("playwright"); const fs = require("fs");
 const URL = process.env.APP_URL || "http://127.0.0.1:3000/"; const OUT = process.env.VID_DIR || require("path").join(__dirname, "..", "video", "salida"); fs.mkdirSync(OUT, { recursive: true });
-const ROL = {"Roberto Salinas": "Gerente", "Luis Treviño": "Supervisor mantenimiento", "Marisol Garza": "Supervisor intendencia", "Héctor Ibarra": "Supervisor compras", "Daniela Cantú": "Alimentos y bebidas", "Mauricio Leal": "Deportes", "Karla Benavides": "Administración", "Sergio Lozano": "Seguridad"}; // los botones de acceso rápido muestran el rol, no el nombre
+const ROL = {"Roberto Salinas": "Gerente", "Luis Treviño": "Supervisor mantenimiento", "Marisol Garza": "Supervisor intendencia", "Héctor Ibarra": "Supervisor compras", "Daniela Cantú": "Alimentos y bebidas", "Mauricio Leal": "Deportes", "Karla Benavides": "Administración", "Sergio Lozano": "Seguridad", "Laura Mendoza": "Atención a socios"}; // los botones de acceso rápido muestran el rol, no el nombre
 const RIPPLE = `document.addEventListener('pointerdown',e=>{const d=document.createElement('div');d.style.cssText='position:fixed;z-index:99999;pointer-events:none;width:46px;height:46px;border-radius:50%;background:rgba(95,168,128,.55);border:3px solid #31674F;left:'+(e.clientX-23)+'px;top:'+(e.clientY-23)+'px;transition:all .55s ease-out';document.body.appendChild(d);requestAnimationFrame(()=>{d.style.transform='scale(1.9)';d.style.opacity='0'});setTimeout(()=>d.remove(),700)},true);`;
 const caps = {}; let folio = "";
 (async () => {
