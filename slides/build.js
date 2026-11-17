@@ -3,7 +3,15 @@ const path = require("path");
 const React = require("react");
 const ReactDOMServer = require("react-dom/server");
 const sharp = require("sharp");
-const { applyTheme } = require("/root/.claude/skills/synced/be39c804-b8a5-495d-8147-e50f7e093f7a_f3fafb9a-d3ba-4ade-90c0-4f1b72c76593/pptx/scripts/apply_theme.js");
+const fs = require("fs");
+// apply_theme.js viene de la skill pptx. Ruta: variable PPTX_SKILL o la primera copia sincronizada que exista.
+const SKILL = process.env.PPTX_SKILL || (() => {
+  const base = "/root/.claude/skills/synced";
+  const d = fs.existsSync(base) ? fs.readdirSync(base).map((x) => path.join(base, x, "pptx")).find((x) => fs.existsSync(path.join(x, "scripts", "apply_theme.js"))) : null;
+  if (!d) throw new Error("No encuentro la skill pptx: define PPTX_SKILL con su carpeta");
+  return d;
+})();
+const { applyTheme } = require(path.join(SKILL, "scripts", "apply_theme.js"));
 
 const OUT = path.join(__dirname, "Club_Valle_Propuesta_Consejo.pptx");
 const LOGO = path.join(__dirname, "..", "brand", "logo-horizontal-verde-oak-transparente.png");
@@ -145,10 +153,10 @@ pres.defineSlideMaster({
 
   const steps = [
     ["1", "Reporta", "QR por zona, foto y prioridad"],
-    ["2", "Asigna", "El supervisor elige al operativo"],
-    ["3", "Atiende", "El operativo actualiza con evidencia"],
+    ["2", "Asigna", "El supervisor elige a su personal, interno o externo"],
+    ["3", "Atiende", "El supervisor registra el avance, con evidencia"],
     ["4", "Cierra", "Solo el supervisor cierra la orden"],
-    ["5", "Mide", "Dashboard para gerencia"],
+    ["5", "Mide", "Tablero para gerencia"],
   ];
   const rowH = 0.66, y0 = 2.95;
   steps.forEach(([n, head, desc], i) => {
@@ -162,13 +170,13 @@ pres.defineSlideMaster({
     s1.addText(desc, { x: 1.2, y: y + 0.22, w: 3.7, h: 0.26, fontSize: 13, color: C.text1, valign: "top", margin: 0, isTextBox: true, objectName: `Paso ${n} detalle` });
   });
   s1.addText("Complementa la app de socios: no la sustituye ni la modifica.", { x: 0.6, y: 6.32, w: 4.5, h: 0.5, fontSize: 12, italic: true, color: C.accent4, valign: "top", margin: 0, isTextBox: true, objectName: "Nota complementa" });
-  s1.addImage({ path: path.join(__dirname, "hero_plataforma.png"), x: 5.43, y: 2.85, w: 7.3, h: 7.3 * 1560 / 2918, altText: "Captura de la plataforma: tablero del gerente en computadora, y formulario de reporte y detalle de una orden en el celular", objectName: "Capturas de la plataforma" });
+  s1.addImage({ path: path.join(__dirname, "hero_plataforma.png"), x: 5.43, y: 2.85, w: 7.3, h: 7.3 * 1560 / 2918, altText: "Captura de la plataforma: tablero del gerente en computadora, y formulario de reporte y detalle de una orden en el celular del supervisor", objectName: "Capturas de la plataforma" });
   s1.addNotes(
     "Mensaje: hoy no hay una plataforma para reportar y dar seguimiento a las fallas del club. " +
     "Lo que se propone es una herramienta adicional, que no toca la app de socios. " +
     "Recorrer los cinco pasos: cualquiera del personal reporta escaneando el QR de la zona; el supervisor del área asigna; " +
-    "el operativo atiende y deja evidencia; solo el supervisor cierra; y la gerencia ve todo en un tablero. " +
-    "Las capturas son de la plataforma funcionando con datos de demostración. Subrayar que cada área ve lo suyo y que el gerente solo consulta."
+    "el personal atiende y el supervisor registra el avance con evidencia (el personal no necesita usar el sistema); solo el supervisor cierra; y la gerencia ve todo en un tablero. " +
+    "Las capturas son de la plataforma funcionando con datos de demostración. Subrayar que cada área ve lo suyo, y que el gerente consulta todo y administra al personal (altas, cambios y bajas)."
   );
 
   // =====================================================================
@@ -182,7 +190,8 @@ pres.defineSlideMaster({
   const recibe = [
     "App web y móvil, con QR por zona del club",
     "Órdenes con folio, foto, prioridad e historial",
-    "Roles: gerente, supervisor, operativo y solicitante",
+    "Roles: gerente, supervisor y solicitante",
+    "Padrón de personal, interno y externo",
     "Tablero para gerencia",
     "Puesta en marcha: zonas, categorías y usuarios",
     "Hosting y soporte incluidos",
@@ -226,7 +235,7 @@ pres.defineSlideMaster({
   );
   s2.addNotes(
     "Mensaje: se pide aprobar un piloto acotado, no un proyecto grande. " +
-    "Lo que recibe el club: la aplicación web y móvil con QR por zona, órdenes con folio, foto, prioridad e historial, los cuatro roles, el tablero para gerencia, la puesta en marcha y hosting y soporte. " +
+    "Lo que recibe el club: la aplicación web y móvil con QR por zona, órdenes con folio, foto, prioridad e historial, los tres roles con acceso (gerente, supervisor y solicitante), el padrón de personal interno y externo, el tablero para gerencia, la puesta en marcha y hosting y soporte. " +
     "Beneficios: ninguna falla se pierde, la gerencia ve el estado real, se prioriza lo que afecta a los socios y se detectan fallas reincidentes. " +
     "Sobre los ahorros: no se prometen cifras; hoy el club no mide tiempos ni costos de atención, y el piloto da la primera línea base con datos reales para cuantificarlos. " +
     "Inversión: $35,000 de implementación única y $5,500 mensuales; el piloto de 3 meses suma $51,500 más IVA ($59,740 con IVA). Todo en pesos mexicanos. " +
